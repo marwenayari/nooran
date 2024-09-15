@@ -32,7 +32,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <div className="flex h-screen items-center p-8">
+          <ul className="side-menu mr-2">
+            <li>
+              <a href="/">🛖</a>
+            </li>
+            <li>
+              <a href="/about">👩‍🦰</a>
+            </li>
+            <li>
+              <a href="/stories">📖</a>
+            </li>
+          </ul>
+          {children}
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>

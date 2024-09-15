@@ -7,12 +7,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Index() {
+export default function Stories() {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
-      Welcome to Nooran!
-      <br />
-      Where arabic never been easier!
+      <h1>Where arabic stories exist!</h1>
     </div>
   );
 }
