@@ -23,6 +23,11 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const menu = [
+    { label: "Home", icon: "🛖", href: "/" },
+    { label: "About", icon: "👩‍🦰", href: "/about" },
+    { label: "Stories", icon: "📖", href: "/stories" },
+  ];
   return (
     <html lang="en">
       <head>
@@ -34,15 +39,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <div className="flex h-screen items-center p-8">
           <ul className="side-menu mr-2">
-            <li>
-              <a href="/">🛖</a>
-            </li>
-            <li>
-              <a href="/about">👩‍🦰</a>
-            </li>
-            <li>
-              <a href="/stories">📖</a>
-            </li>
+            {menu.map((item) => (
+              <li className="" key={item.href}>
+                <a
+                  href={item.href}
+                  className="flex items-center justify-center w-10 h-10 my-2"
+                >
+                  <span>{item.icon}</span>
+                </a>
+              </li>
+            ))}
           </ul>
           {children}
         </div>
