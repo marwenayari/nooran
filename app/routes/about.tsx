@@ -4,25 +4,21 @@ const AboutPage = () => {
   return (
     <div>
       <h1>About Nooran</h1>
-      <p>
-        Nooran is an innovative project aimed at revolutionizing the way we
-        approach hackathons. Our team is dedicated to creating a seamless and
-        engaging experience for all participants.
-      </p>
+      <p>Nooran is an innovative project...</p>
 
       <h2>Our Team</h2>
       <ul>
         <li>
-          <strong>Marwen Ayari</strong> - Project Lead
+          <strong>Marwen Ayari</strong> - Team Member
         </li>
         <li>
-          <strong>Jane Doe</strong> - Developer
+          <strong>Asrar</strong> - Team Member
         </li>
         <li>
-          <strong>John Smith</strong> - Designer
+          <strong>Hanan</strong> - Team Member
         </li>
         <li>
-          <strong>Emily Johnson</strong> - Marketing Specialist
+          <strong>Amal</strong> - Team Member
         </li>
       </ul>
     </div>

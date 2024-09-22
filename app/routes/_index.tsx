@@ -54,7 +54,7 @@ const courses = [
     color: "bg-violet-200",
   },
   {
-    title: "Arabic 401",
+    title: "Arabic Verbs",
     description: "Learn the advanced level of Arabic",
     level: "Advanced",
     rate: 4.8,
@@ -62,7 +62,7 @@ const courses = [
     color: "bg-green-200",
   },
   {
-    title: "ASRAR ..",
+    title: "Long Phrases",
     description: "Learn the advanced level of Arabic",
     level: "Advanced",
     rate: 4.8,
