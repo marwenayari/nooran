@@ -1,7 +1,7 @@
-// routes/stories.tsx
 import { useActionData, Form } from "@remix-run/react";
 import { json, ActionFunction } from "@remix-run/node";
 import { loadStory } from "~/utils/watsonx.server";
+import { useTranslation } from "react-i18next";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -18,24 +18,29 @@ export const action: ActionFunction = async ({ request }) => {
 
 const StoriesPage = () => {
   const actionData: any | undefined = useActionData();
+  let { t } = useTranslation("story");
 
   return (
     <div>
-      <h1>Generate a Kid's Story</h1>
-      <Form method="post">
+      <Form method="post" className="flex flex-col gap-4">
         <div>
-          <label htmlFor="words">Words (comma separated):</label>
+          <label htmlFor="words">{t("words")}: </label>
           <input type="text" id="words" name="words" required />
         </div>
         <div>
-          <label htmlFor="subject">Subject:</label>
+          <label htmlFor="subject">{t("subject")}: </label>
           <input type="text" id="subject" name="subject" required />
         </div>
-        <button type="submit">Generate Story</button>
+        <button
+          className="w-40 rounded-md border-solid border-2 border-cyan-000"
+          type="submit"
+        >
+          {t("generate-story")}{" "}
+        </button>
       </Form>
 
       {actionData?.story && (
-        <div>
+        <div className="mt-4 text-center">
           <p>{actionData.story}</p>
         </div>
       )}
