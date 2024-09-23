@@ -1,4 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 export const meta: MetaFunction = () => {
   return [
@@ -6,33 +8,38 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Welcome to Nooran!" },
   ];
 };
+
 const categories = [
   {
-    title: "All",
+    title: "all",
     key: 0,
   },
   {
-    title: "Letters",
+    title: "letters",
     key: 1,
   },
   {
-    title: "Words",
+    title: "vocabulary",
     key: 2,
   },
   {
-    title: "Verbs",
+    title: "sentences",
     key: 3,
   },
   {
-    title: "Phrases",
+    title: "grammar",
     key: 4,
+  },
+  {
+    title: "conversations",
+    key: 5,
   },
 ];
 const courses = [
   {
     title: "Arabic 101",
     description: "Learn the basics of Arabic",
-    level: "Beginner",
+    level: "beginner",
     rate: 4.6,
     price: 0,
     color: "bg-red-200",
@@ -40,7 +47,7 @@ const courses = [
   {
     title: "Arabic 201",
     description: "Learn the intermediate level of Arabic",
-    level: "Intermediate",
+    level: "intermediate",
     rate: 4.8,
     price: 0,
     color: "bg-orange-200",
@@ -48,7 +55,7 @@ const courses = [
   {
     title: "Arabic 301",
     description: "Learn the advanced level of Arabic",
-    level: "Advanced",
+    level: "advanced",
     rate: 4.8,
     price: 200,
     color: "bg-violet-200",
@@ -56,31 +63,31 @@ const courses = [
   {
     title: "Arabic Verbs",
     description: "Learn the advanced level of Arabic",
-    level: "Advanced",
+    level: "advanced",
     rate: 4.8,
-    price: 90,
+    price: 150,
     color: "bg-green-200",
   },
   {
     title: "Long Phrases",
     description: "Learn the advanced level of Arabic",
-    level: "Advanced",
+    level: "advanced",
     rate: 4.8,
-    price: 900,
+    price: 90,
     color: "bg-blue-200",
   },
 ];
+
 export default function Index() {
+  let { t } = useTranslation(["home", "common"]);
   let selected = 0;
   function selectCategory(key: number) {
     selected = key;
   }
 
   return (
-    <div className="h-full w-screen p-8">
-      <h1 className="font-thin text-6xl w-1/2 mb-8">
-        Arabic Never Been Easier
-      </h1>
+    <div>
+      <h1 className="font-thin text-6xl w-1/2 mb-8">{t("title")}</h1>
       <div className="flex flex-col my-4">
         <div className="flex flex-row">
           {categories.map((category) => (
@@ -91,23 +98,25 @@ export default function Index() {
               key={category.title}
               className="mr-4 p-4 bg-dark-beige rounded-xl cursor-pointer"
             >
-              <h3>{category.title}</h3>
+              <h3>{t(category.title)}</h3>
             </div>
           ))}
         </div>
       </div>
       <div className="flex flex-col">
-        <h2 className="font-thin text-2xl my-3">Recent</h2>
+        <h2 className="font-thin text-2xl my-3">{t("recent")}</h2>
         <div className="flex flex-row flex-wrap">
-          {courses.map((course) => (
-            <div
-              className={`flex flex-col justify-between  p-4 rounded-xl h-40 w-1/3 m-4 ${course.color}`}
+          {courses.map((course, idx) => (
+            <Link
+              className={`flex flex-col justify-between cursor-pointer p-4 rounded-xl h-40 w-1/3 m-4 ${course.color}`}
               key={course.title}
+              to={"/courses/" + idx}
             >
               <div className="flex justify-between">
-                <span className="uppercase text-sm">{course.level} </span>
-                <span className="bg-white rounded-xl w-10 text-center">
-                  {course.rate}
+                <span className="uppercase text-sm">{t(course.level)} </span>
+                <span className="bg-white rounded-xl w-12 flex items-center justify-center">
+                  <span>{course.rate}</span>
+                  <span className="text-xs">⭐️</span>
                 </span>
               </div>
               <div>
@@ -116,9 +125,11 @@ export default function Index() {
               </div>
               <div className="flex justify-between">
                 <span></span>
-                <span>{course.price == 0 ? "Free" : "$" + course.price}</span>
+                <span>
+                  {course.price == 0 ? t("common:free") : "$" + course.price}
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

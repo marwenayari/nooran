@@ -11,10 +11,16 @@ html,
 body {
   background-color: #fcf8f6;
   @apply dark:bg-gray-700;
+  font-family: "Cairo";
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 ul.side-menu {
@@ -23,7 +29,6 @@ ul.side-menu {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border-radius: 10px;
   @apply dark:bg-gray-800;
 }
 
