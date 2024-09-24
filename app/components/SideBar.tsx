@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { Link } from "@remix-run/react";
 
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
@@ -8,7 +9,7 @@ export default function SideBar() {
     <div
       className="user-card
       hidden md:flex lg:flex 
-      flex-col items-center rounded-2xl p-8 bg-dark-beige w-1/3 h-full"
+      flex-col items-center rounded-2xl p-8 bg-dark-beige w-full md:w-1/3 lg:w-1/2 h-full"
     >
       <div className="flex justify-between w-full h-10">
         <span className="cursor-pointer">
@@ -34,7 +35,7 @@ export default function SideBar() {
           </span>
         </div>
         <hr />
-        <div className="m-2">
+        <div className="my-2">
           <div className="flex justify-between">
             <i className="ri-macbook-line text-xl px-1"></i>
             <span>5 {t("lessons-completed")}</span>
@@ -48,13 +49,13 @@ export default function SideBar() {
       <h4 className="w-full mb-2">{t("my-lessons")}</h4>
       <div className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
         <div className="course-card w-full h-20 bg-red-200 rounded-xl p-4">
-          <h4>Arabic 101</h4>
+          <Link to="/courses/0">Arabic 101</Link>
         </div>
         <div className="course-card w-full h-20 bg-orange-200 rounded-xl p-4">
-          <h4>Arabic 201</h4>
+          <Link to="/courses/1">Arabic 201</Link>
         </div>
         <div className="course-card w-full h-20 bg-violet-200 rounded-xl p-4">
-          <h4>Arabic 301</h4>
+          <Link to="/courses/2">Arabic 301</Link>
         </div>
       </div>
     </div>
