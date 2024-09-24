@@ -1,15 +1,22 @@
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-export default function Sidebar() {
+export default function SideBar() {
   let { t } = useTranslation("sidebar");
 
   return (
-    <div className="user-card flex flex-col items-center rounded-2xl p-8 bg-dark-beige w-1/3 h-full">
+    <div
+      className="user-card
+      hidden md:flex lg:flex 
+      flex-col items-center rounded-2xl p-8 bg-dark-beige w-1/3 h-full"
+    >
       <div className="flex justify-between w-full h-10">
-        {/* notif icona and settings icon */}
-        <span className="cursor-pointer">🔔</span>
-        <span className="cursor-pointer">⚙️</span>
+        <span className="cursor-pointer">
+          <i className="ri-notification-4-line"></i>{" "}
+        </span>
+        <span className="cursor-pointer">
+          <i className="ri-settings-4-line"></i>
+        </span>
       </div>
       <img
         className="rounded-full w-20 h-20"
@@ -21,12 +28,21 @@ export default function Sidebar() {
       <div className="activity-box w-full h-40 bg-white rounded-xl p-4 my-4">
         <div className="flex justify-between w-full h-10">
           <h4 className="text-lg">{t("activity")}</h4>
-          <span>👍 {t("great-job")}</span>
+          <span>
+            <i className="ri-thumb-up-line mx-1"></i>
+            {t("great-job")}
+          </span>
         </div>
         <hr />
         <div className="m-2">
-          <p>📚 5 {t("lessons-completed")}</p>
-          <p>📝 3 {t("quizes-completed")}</p>
+          <div className="flex justify-between">
+            <i className="ri-macbook-line text-xl px-1"></i>
+            <span>5 {t("lessons-completed")}</span>
+          </div>
+          <div className="flex justify-between">
+            <i className="ri-book-read-line text-xl px-1"></i>
+            <span>3 {t("quizes-completed")}</span>
+          </div>
         </div>
       </div>
       <h4 className="w-full mb-2">{t("my-lessons")}</h4>
