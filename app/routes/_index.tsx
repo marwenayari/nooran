@@ -83,7 +83,7 @@ export default function Index() {
 
   return (
     <div>
-      <h1 className="font-thin text-4xl md:text-6xl md:w-1/2 lg:w-1/3 mb-8">
+      <h1 className="font-thin text-4xl md:text-6xl md:w-1/2 lg:w-1/2 xl:1/3 mb-8">
         {t("title")}
       </h1>
       <div className="flex flex-col my-4">
@@ -107,9 +107,9 @@ export default function Index() {
           {courses.map((course, idx) => (
             <Link
               className={`
-                flex flex-col justify-between cursor-pointer p-4 rounded-xl
+                flex flex-col justify-between cursor-pointer p-2 md:-4 lg:p-4 xl:p-4 rounded-xl
                 h-40 w-[calc(50%-0.5rem)] md:w-1/3 m-1 md:m-4 ${course.color}`}
-              key={course.title}
+              key={idx}
               to={"/courses/" + idx}
             >
               <div className="flex justify-between items-center">

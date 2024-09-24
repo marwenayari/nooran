@@ -46,7 +46,7 @@ export default function SideBar() {
         </div>
       </div>
       <h4 className="w-full mb-2">{t("my-lessons")}</h4>
-      <div className="flex flex-col gap-2 w-full">
+      <div className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
         <div className="course-card w-full h-20 bg-red-200 rounded-xl p-4">
           <h4>Arabic 101</h4>
         </div>

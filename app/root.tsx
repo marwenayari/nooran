@@ -63,7 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden"
         >
           <SideMenu />
-          <section className="h-full w-full  md:p-8 lg:p-8 overflow-y-scroll">
+          <section className="h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll">
             {children}
           </section>
           <SideBar />
