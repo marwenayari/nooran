@@ -23,10 +23,6 @@ const categories = [
     key: 2,
   },
   {
-    title: "sentences",
-    key: 3,
-  },
-  {
     title: "grammar",
     key: 4,
   },
@@ -79,7 +75,7 @@ const courses = [
 ];
 
 export default function Index() {
-  let { t } = useTranslation(["home", "common"]);
+  let { t } = useTranslation("home");
   let selected = 0;
   function selectCategory(key: number) {
     selected = key;
@@ -87,16 +83,18 @@ export default function Index() {
 
   return (
     <div>
-      <h1 className="font-thin text-6xl w-1/2 mb-8">{t("title")}</h1>
+      <h1 className="font-thin text-4xl md:text-6xl md:w-1/2 lg:w-1/3 mb-8">
+        {t("title")}
+      </h1>
       <div className="flex flex-col my-4">
-        <div className="flex flex-row">
+        <div className="flex flex-row overflow-scroll">
           {categories.map((category) => (
             <div
               onClick={() => {
                 selectCategory(category.key);
               }}
               key={category.title}
-              className="mr-4 p-4 bg-dark-beige rounded-xl cursor-pointer"
+              className="mr-4 p-2 px-4 md:p-4 bg-dark-beige rounded-xl cursor-pointer"
             >
               <h3>{t(category.title)}</h3>
             </div>
@@ -108,20 +106,22 @@ export default function Index() {
         <div className="flex flex-row flex-wrap">
           {courses.map((course, idx) => (
             <Link
-              className={`flex flex-col justify-between cursor-pointer p-4 rounded-xl h-40 w-1/3 m-4 ${course.color}`}
+              className={`
+                flex flex-col justify-between cursor-pointer p-4 rounded-xl
+                h-40 w-[calc(50%-0.5rem)] md:w-1/3 m-1 md:m-4 ${course.color}`}
               key={course.title}
               to={"/courses/" + idx}
             >
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="uppercase text-sm">{t(course.level)} </span>
                 <span className="bg-white rounded-xl w-12 flex items-center justify-center">
                   <span>{course.rate}</span>
-                  <span className="text-xs">⭐️</span>
+                  <i className="ri-star-fill text-yellow-400 mx-1/2"></i>
                 </span>
               </div>
               <div>
                 <h3 className="text-lg">{course.title}</h3>
-                <span>{course.description}</span>
+                {course.description.split(" ").splice(0, 4).join(" ") + ".."}
               </div>
               <div className="flex justify-between">
                 <span></span>

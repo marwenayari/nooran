@@ -23,28 +23,7 @@ body {
   background: transparent;
 }
 
-ul.side-menu {
-  height: 100%;
+.side-menu {
   background-color: #f4ebe5;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
   @apply dark:bg-gray-800;
-}
-
-ul.side-menu li a {
-  border-radius: 50%;
-  background-color: white;
-  @apply dark:bg-gray-500;
-}
-
-.story-container {
-  background-size: cover;
-  background-position-y: -120px;
-  border-radius: 14px;
-}
-.story-content {
-  border-radius: 0 0 14px 14px;
-  font-family: "Cairo";
-  font-size: 18px;
 }

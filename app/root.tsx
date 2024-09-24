@@ -8,12 +8,14 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
+import "remixicon/fonts/remixicon.css";
 
 import "./tailwind.css";
 import { useChangeLanguage } from "remix-i18next/react";
 import i18next from "~/i18n/i18next.server";
 import { useTranslation } from "react-i18next";
-import Sidebar from "./components/Sidebar";
+import SideBar from "./components/SideBar";
+import SideMenu from "./components/SideMenu";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,11 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   let { i18n } = useTranslation();
 
   useChangeLanguage("locale");
-  const menu = [
-    { label: "Home", icon: "🛖", href: "/" },
-    { label: "About", icon: "👩‍🦰", href: "/about" },
-    { label: "Stories", icon: "📖", href: "/stories" },
-  ];
+
   return (
     <html lang={locale} dir={i18n.dir()}>
       <head>
@@ -59,22 +57,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <div className="flex w-screen h-screen items-center p-8 overflow-hidden">
-          <ul className="side-menu mr-2 h-full rounded-2xl">
-            {menu.map((item) => (
-              <li className="" key={item.href}>
-                <a
-                  href={item.href}
-                  className="flex items-center justify-center w-10 h-10 my-2"
-                >
-                  <span>{item.icon}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className="h-full w-full p-8 overflow-y-scroll">{children}</div>
-          <Sidebar />
-        </div>
+        <section
+          className="
+          flex flex-col-reverse md:flex-row lg-flex-row items-center
+          w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden"
+        >
+          <SideMenu />
+          <section className="h-full w-full  md:p-8 lg:p-8 overflow-y-scroll">
+            {children}
+          </section>
+          <SideBar />
+        </section>
         <ScrollRestoration />
         <Scripts />
       </body>
