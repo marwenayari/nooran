@@ -1,7 +1,7 @@
 import { useActionData, Form } from "@remix-run/react";
 import { json, ActionFunction } from "@remix-run/node";
-import { loadStory } from "~/utils/watsonx.server";
 import { useTranslation } from "react-i18next";
+import { loadStory } from "~/services/watsonx.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();

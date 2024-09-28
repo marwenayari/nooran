@@ -1,6 +1,6 @@
 import { WatsonXAI } from "@ibm-cloud/watsonx-ai";
 import { IamAuthenticator } from "ibm-cloud-sdk-core";
-import { systemPrompt } from "./systemPrompt";
+import { systemPrompt } from "../utils/systemPrompt";
 
 export function createWatsonxAIService() {
   return WatsonXAI.newInstance({

@@ -2,5 +2,8 @@
   "title": "Arabic Never Been Easier",
   "free": "Free",
   "save": "Save",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "logout": "Logout",
+  "sign-in": "Sign In",
+  "sign-up": "Sign Up"
 }

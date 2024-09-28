@@ -1,9 +1,12 @@
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link } from "@remix-run/react";
+import { Link, Form } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
+  const { user } = useLoaderData();
+  const displayName = user?.display_name || user?.email.split("@")[0];
 
   return (
     <div
@@ -20,12 +23,19 @@ export default function SideBar() {
         </span>
       </div>
       <img
-        className="rounded-full w-20 h-20"
+        className="rounded-full w-20 h-20 bg-red-400"
         src="https://trello-members.s3.amazonaws.com/5b8acf1ffbad8c456f424e20/4113d92d0d92df6202eea4b541b35cca/50.png"
         alt=""
       />
-      <h3 className="text-2xl">Marwen Ayari</h3>
+      {/* Display the user name or email */}
+      <h3 className="text-2xl">{displayName}</h3>
       <LanguageSwitcher />
+
+      {/* Add a form for logout */}
+      <Form method="post" action="/logout">
+        <button className="mt-2">{t("common:logout")}</button>
+      </Form>
+
       <div className="activity-box w-full h-40 bg-white rounded-xl p-4 my-4">
         <div className="flex justify-between w-full h-10">
           <h4 className="text-lg">{t("activity")}</h4>
