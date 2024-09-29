@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import "remixicon/fonts/remixicon.css";
@@ -34,7 +35,7 @@ export async function loader({ request }: LoaderArgs) {
   let storedLanguage =
     typeof window !== "undefined" ? localStorage.getItem("language") : null;
   let locale = storedLanguage || (await i18next.getLocale(request));
-
+ 
   return json({ locale });
 }
 
@@ -47,7 +48,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
   let { i18n } = useTranslation();
 
   useChangeLanguage("locale");
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/auth";
 
+  
   return (
     <html lang={locale} dir={i18n.dir()}>
       <head>
@@ -57,20 +61,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <section
-          className="
-          flex flex-col-reverse md:flex-row lg-flex-row items-center
-          w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden"
-        >
-          <SideMenu />
-          <section className="h-full w-full  md:p-8 lg:p-8 overflow-y-scroll">
+        {isAuthPage ? (
+          <main className="flex items-center justify-center h-screen">
             {children}
+          </main>
+        ) : (
+          <section
+            className="
+            flex flex-col-reverse md:flex-row lg:flex-row items-center
+            w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden"
+          >
+            <SideMenu />
+            <section className="h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll">
+              {children}
+</section>
+            <SideBar />
           </section>
-          <SideBar />
-        </section>
+          
+        )}
         <ScrollRestoration />
         <Scripts />
-      </body>
+        </body>
     </html>
   );
 }
