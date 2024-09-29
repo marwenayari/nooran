@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 export default function SideMenu() {
   const menu = [
     { label: "Home", icon: "ri-home-2-line", href: "/" },
-    { label: "About", icon: "ri-user-line", href: "/about" },
     { label: "Stories", icon: "ri-book-open-line", href: "/stories" },
+    { label: "About", icon: "ri-team-line", href: "/about" },
   ];
   return (
     <section

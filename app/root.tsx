@@ -9,7 +9,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-import { getSession } from "./session.server"; // Your session logic here
+import { getSession } from "./session.server";
 
 import "remixicon/fonts/remixicon.css";
 import "./tailwind.css";
@@ -36,11 +36,8 @@ export const links: LinksFunction = () => [
 export async function loader({ request }: LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   const user = session.get("user");
-  const isSignInPage = new URL(request.url).pathname === "/sign-in";
+  const isSignInPage = new URL(request.url).pathname === "/auth";
 
-  if (!user && !isSignInPage) {
-    return redirect("/sign-in");
-  }
   if (user && isSignInPage) {
     return redirect("/");
   }
@@ -62,7 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   useChangeLanguage(locale);
 
   const location = useLocation();
-  const isAuthPage = location.pathname === "/sign-in";
+  const isAuthPage = location.pathname === "/auth";
 
   return (
     <html lang={locale} dir={i18n.dir()}>

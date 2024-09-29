@@ -3,7 +3,9 @@ import { getSession, commitSession } from "~/session.server"; // Adjust the path
 import { Form, useActionData } from "@remix-run/react";
 import { createSupabaseServerClient } from "~/services/upabase.server";
 
-export const loader = async ({ request }) => {
+import type { LoaderFunction } from "@remix-run/node";
+
+export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const user = session.get("user");
 
@@ -61,7 +63,7 @@ export const action = async ({ request }) => {
   });
 };
 
-export default function SignIn() {
+export default function Auth() {
   const actionData = useActionData();
 
   return (
