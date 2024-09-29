@@ -20,6 +20,9 @@ export default {
         "dark-beige": "#f4ebe5",
         beige: "#fcf8f6",
       },
+      backgroundImage: {
+        cloud: "url('/cloudbg.jpg')",
+      },
     },
   },
   plugins: [],
