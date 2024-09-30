@@ -1,6 +1,6 @@
 import { WatsonXAI } from "@ibm-cloud/watsonx-ai";
 import { IamAuthenticator } from "ibm-cloud-sdk-core";
-import { systemPrompt } from "./systemPrompt";
+import { systemPrompt } from "../utils/systemPrompt";
 
 export function createWatsonxAIService() {
   return WatsonXAI.newInstance({
@@ -25,6 +25,7 @@ export const loadStory = async (words: string[], subject: string) => {
   };
   const inputText = ` الكلمات: ${words.join(", ")}
     الموضوع: ${subject}`;
+
   const params = {
     input: `<<SYS>>${systemPrompt}<<SYS>>[INST]${inputText}[/INST]`,
     modelId: "sdaia/allam-1-13b-instruct",

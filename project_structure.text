@@ -1,0 +1,80 @@
+- .DS_Store
+- .env
+- .env.example
+- .env.local
+- .eslintrc.cjs
+- .gitignore
+- README.md
+- app
+  - .DS_Store
+  - components
+    - LanguageSwitcher.tsx
+    - SideBar.tsx
+    - SideMenu.tsx
+  - entry.client.tsx
+  - entry.server.tsx
+  - i18n
+    - i18n.ts
+    - i18next.server.ts
+  - root.tsx
+  - routes
+    - _index.tsx
+    - about.tsx
+    - courses.$id.tsx
+    - profile.tsx
+    - sign-in.tsx
+    - stories.tsx
+  - services
+    - supabase.client.ts
+    - upabase.server.ts
+    - watsonx.server.ts
+    - watsonx.service.ts
+  - session.server.ts
+  - tailwind.css
+  - utils
+    - systemPrompt.ts
+- build
+  - client
+    - assets
+      - _index-DnPs6FvX.js
+      - components-IbwLOKDL.js
+      - entry.client-ZUd_ivrw.js
+      - jsx-runtime-56DGgGmo.js
+      - manifest-5043a0c5.js
+      - root-BJRh3OzC.js
+      - root-CuTOgBRU.css
+    - favicon.ico
+    - logo-dark.png
+    - logo-light.png
+  - server
+    - assets
+    - index.js
+- package-lock.json
+- package.json
+- postcss.config.js
+- project_structure.text
+- public
+  - .DS_Store
+  - favicon.ico
+  - locales
+    - ar
+      - common.json
+      - home.json
+      - lessons.json
+      - profile.json
+      - sidebar.json
+      - story.json
+    - en
+      - common.json
+      - home.json
+      - lessons.json
+      - profile.json
+      - sidebar.json
+      - story.json
+  - logo-dark.png
+  - logo-light.png
+  - logo.png
+  - nooran-logo.svg
+- tailwind.config.ts
+- tsconfig.json
+- vite.config.ts
