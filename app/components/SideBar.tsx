@@ -3,12 +3,18 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { Link, Form } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 
+type LoaderData = {
+  user: {
+    display_name?: string;
+    email: string;
+  } | null;
+};
+
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
-  const { user } = useLoaderData();
+  const { user } = useLoaderData<LoaderData>();
   const displayName = user?.display_name || user?.email.split("@")[0];
   const isGuest = !user;
-  console.log("is guest", isGuest);
 
   return (
     <div

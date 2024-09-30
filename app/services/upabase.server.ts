@@ -9,9 +9,6 @@ export const createSupabaseServerClient = (request: Request) => {
   const cookies = parse(request.headers.get("Cookie") || "");
   const headers = new Headers();
 
-  console.log("SUPABASE_URL ", process.env.SUPABASE_URL);
-  console.log("SUPABASE_ANON_KEY ", process.env.SUPABASE_ANON_KEY);
-
   const supabase = createServerClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!,

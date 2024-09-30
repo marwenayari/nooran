@@ -1,9 +1,16 @@
 import { json, redirect } from "@remix-run/node";
-import { getSession, commitSession } from "~/session.server"; // Adjust the path as needed
+import { getSession, commitSession } from "~/session.server";
 import { Form, useActionData } from "@remix-run/react";
 import { createSupabaseServerClient } from "~/services/upabase.server";
 
 import type { LoaderFunction } from "@remix-run/node";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "~/components/LanguageSwitcher";
+
+type ActionData = {
+  success?: boolean;
+  error?: string;
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -43,7 +50,6 @@ export const action = async ({ request }) => {
         return json({ success: false, error: signUpError.message });
       }
 
-      // Optionally: Set the user in session after sign-up
       const session = await getSession(request.headers.get("Cookie"));
       session.set("user", signUpData.user);
       return redirect("/", {
@@ -54,7 +60,6 @@ export const action = async ({ request }) => {
     }
   }
 
-  // If sign-in is successful, store the user in the session
   const session = await getSession(request.headers.get("Cookie"));
   session.set("user", signInData.user);
 
@@ -64,36 +69,71 @@ export const action = async ({ request }) => {
 };
 
 export default function Auth() {
-  const actionData = useActionData();
+  let { t } = useTranslation("auth");
+  const actionData: ActionData | undefined = useActionData();
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Form method="post" className="p-8 bg-white shadow-md rounded">
-        <h2 className="text-lg font-bold">Sign In / Sign Up</h2>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          required
-          className="block my-4 p-2 border"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-          className="block my-4 p-2 border"
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Sign In
-        </button>
-        {actionData?.error && (
-          <p className="text-red-500">{actionData.error}</p>
-        )}
-      </Form>
-    </div>
+    <main className="flex items-center justify-center h-screen w-screen bg-cloud bg-cover">
+      <div
+        className="flex items-center justify-center h-screen w-screen
+              bg-gradient-to-b from-red-300 to-red-100/10"
+      >
+        <div className="login-box bg-white dark:bg-slate-600 dark:text-white p-8 rounded-2xl shadow-lg w-80 text-center">
+          <div className="text-center  flex justify-center">
+            <img className="w-12 h-12" src="/logo.png" alt="" />
+          </div>
+          <h2 className="text-2xl mb-3 dark:text-white">
+            {t("sign-in-with-email")}
+          </h2>
+          <h3 className="mb-6 dark:text-white">{t("start-learning")}</h3>
+          <Form method="post">
+            <div>
+              <input
+                className="my-1 w-full p-2 rounded-md bg-red-50/50"
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+              ></input>
+              <input
+                className="my-1 w-full p-2 rounded-md bg-red-50/50"
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+              ></input>
+              <div className="mb-5">
+                {actionData?.error && (
+                  <span className="text-red-500">{actionData?.error}</span>
+                )}
+              </div>
+              <div className="mb-5 text-right">
+                <h3 className="dark:text-white cursor-pointer">
+                  {t("forgot-password")}
+                </h3>
+              </div>
+              <button
+                className="p-2 bg-slate-600 text-white rounded-md w-full"
+                type="submit"
+              >
+                {t("sign-in")}
+              </button>
+            </div>
+          </Form>
+
+          <div className="flex flex-col items-center justify-center h-20">
+            <span className="mb-2 text-slate-500">{t("or-sign-in-with")}</span>
+            <div className="flex justify-between w-1/2 ">
+              <i className="ri-google-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10"></i>
+              <i className="ri-apple-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10"></i>
+              <i className="ri-twitter-x-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10"></i>
+            </div>
+          </div>
+          <div className="hidden">
+            <LanguageSwitcher />
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
