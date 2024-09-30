@@ -1,0 +1,11 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 540" width="1080" height="540">
+	<title>New Project</title>
+	<style>
+		tspan { white-space:pre } 
+		.t0 { font-size: 450px;fill: #000000;font-weight: 900;font-family: "Mada-Black", "Mada" } 
+	</style>
+	<text id="نوران" style="transform: matrix(1,0,0,1,4,364)" >
+		<tspan x="852.3" y="0" class="t0">ن</tspan><tspan  y="0" class="t0">و</tspan><tspan  y="0" class="t0">ر</tspan><tspan  y="0" class="t0">ا</tspan><tspan  y="0" class="t0">ن
+</tspan>
+	</text>
+</svg>
