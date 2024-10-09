@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link, Form } from "@remix-run/react";
+import { Link, Form, useLocation } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 
 type LoaderData = {
@@ -16,7 +16,11 @@ export default function SideBar() {
   const displayName = user?.display_name || user?.email.split("@")[0];
   const isGuest = !user;
 
-  return (
+  const location = useLocation();
+  const isStoriesPage = location.pathname === "/stories";
+  return isStoriesPage ? (
+    <div></div>
+  ) : (
     <div
       className="user-card
       hidden md:flex lg:flex 

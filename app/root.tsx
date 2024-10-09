@@ -53,7 +53,10 @@ export let handle = {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  let { locale } = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData();
+
+  const { locale } = loaderData ?? { locale: "en" };
+
   let { i18n } = useTranslation();
 
   useChangeLanguage(locale);

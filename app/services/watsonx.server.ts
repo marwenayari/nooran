@@ -12,7 +12,7 @@ export function createWatsonxAIService() {
   });
 }
 
-export const loadStory = async (words: string[], subject: string) => {
+export const loadStory = async (words: string[], age: number) => {
   const watsonxAIService = createWatsonxAIService();
 
   const textGenRequestParametersModel = {
@@ -24,7 +24,7 @@ export const loadStory = async (words: string[], subject: string) => {
     temperature: 0.3,
   };
   const inputText = ` الكلمات: ${words.join(", ")}
-    الموضوع: ${subject}`;
+    العمر: ${age}`;
 
   const params = {
     input: `<<SYS>>${systemPrompt}<<SYS>>[INST]${inputText}[/INST]`,
