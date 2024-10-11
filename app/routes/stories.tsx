@@ -13,6 +13,7 @@ import { arraysHaveCommonElements } from "~/utils/keywordsSimilarity";
 import { getSession } from "~/services/session.server";
 import { useProfile } from "~/context/ProfileContext";
 import { Story } from "~/types";
+import { getStoryCover } from "~/utils/colors";
 
 export const action: ActionFunction = async ({ request }) => {
   const words = ["صداقة", "عائلة", "أهل", "محبة"];
@@ -68,19 +69,6 @@ const StoriesPage = () => {
     return <div>Error: {error}</div>;
   }
   const name = profile?.display_name.split(" ")[0];
-  const colors = [
-    "bg-orange-200",
-    "bg-violet-200",
-    "bg-green-300",
-    "bg-blue-300",
-    "bg-amber-300",
-    "bg-sky-300",
-    "bg-emerald-300",
-    "bg-red-200",
-    "bg-lime-400",
-    "bg-teal-800",
-  ];
-
   const forYou = storiesForYou;
 
   if (actionData) {
@@ -128,7 +116,7 @@ const StoriesPage = () => {
         <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>
         <div className="flex gap-10  overflow-x-scroll w-screen/2">
           {stories.length ? (
-            stories.map((story: Story) => (
+            stories.map((story: Story, idx: number) => (
               <div
                 key={story.id}
                 onClick={() => {
@@ -136,9 +124,9 @@ const StoriesPage = () => {
                 }}
               >
                 <div
-                  className={`cover cursor-pointer shadow-xl h-40 w-28  ${
-                    colors[story.id % 6]
-                  } text-center p-2 text-white mb-3`}
+                  className={`cover cursor-pointer shadow-xl h-40 w-28  ${getStoryCover(
+                    idx
+                  )} text-center p-2 text-white mb-3`}
                 >
                   <h4>{story.title}</h4>
                 </div>
@@ -166,9 +154,9 @@ const StoriesPage = () => {
               }}
             >
               <div
-                className={`cover cursor-pointer shadow-xl h-40 w-28 ${
-                  colors[story.id % 6]
-                } text-center p-2 text-white mb-3`}
+                className={`cover cursor-pointer shadow-xl h-40 w-28 ${getStoryCover(
+                  story.id
+                )} text-center p-2 text-white mb-3`}
               >
                 <h4>{story.title}</h4>
               </div>
@@ -189,9 +177,9 @@ const StoriesPage = () => {
         <section className="w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16">
           <div className="flex gap-4">
             <div
-              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer shadow-xl h-40 w-28 ${
-                colors[selected % 6]
-              } text-center p-2 text-white`}
+              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer shadow-xl h-40 w-28 ${getStoryCover(
+                selected
+              )} text-center p-2 text-white`}
             >
               <h2>{getStory(selected).title}</h2>
             </div>
