@@ -1,4 +1,3 @@
-// session.server.ts
 import { createCookieSessionStorage } from "@remix-run/node";
 
 let sessionSecret = process.env.SESSION_SECRET;

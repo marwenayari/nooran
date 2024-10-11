@@ -2,26 +2,20 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Link, Form, useLocation } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
-
-type LoaderData = {
-  user: {
-    display_name?: string;
-    email: string;
-  } | null;
-};
+import { useProfile } from "~/context/ProfileContext";
 
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
-  const { user } = useLoaderData<LoaderData>();
-  const displayName = user?.display_name || user?.email.split("@")[0];
-  const isGuest = !user;
+  const profile = useProfile();
+  const displayName = profile?.display_name || profile?.email.split("@")[0];
+  const isGuest = !profile;
 
   const location = useLocation();
   const isStoriesPage = location.pathname === "/stories";
   return isStoriesPage ? (
     <div></div>
   ) : (
-    <div
+    <section
       className="user-card
       hidden md:flex lg:flex 
       flex-col items-center rounded-2xl p-8 bg-dark-beige w-full md:w-1/3 lg:w-1/2 h-full"
@@ -64,7 +58,7 @@ export default function SideBar() {
         </Form>
       )}
 
-      <div className="activity-box w-full h-40 bg-white rounded-xl p-4 my-4">
+      <section className="activity-box w-full h-40 bg-white rounded-xl p-4 my-4">
         <div className="flex justify-between w-full h-10">
           <h4 className="text-lg">{t("activity")}</h4>
           <span>
@@ -83,9 +77,9 @@ export default function SideBar() {
             <span>3 {t("quizes-completed")}</span>
           </div>
         </div>
-      </div>
+      </section>
       <h4 className="w-full mb-2">{t("my-lessons")}</h4>
-      <div className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
+      <section className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
         <div className="course-card w-full h-20 bg-red-200 rounded-xl p-4">
           <Link to="/courses/0">Arabic 101</Link>
         </div>
@@ -95,7 +89,7 @@ export default function SideBar() {
         <div className="course-card w-full h-20 bg-violet-200 rounded-xl p-4">
           <Link to="/courses/2">Arabic 301</Link>
         </div>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 }

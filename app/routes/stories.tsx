@@ -3,10 +3,16 @@ import {
   Form,
   useNavigate,
   useSearchParams,
+  useLoaderData,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import { json, ActionFunction } from "@remix-run/node";
+import { json, ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { loadStory } from "~/services/watsonx.server";
+import { createSupabaseServerClient } from "~/services/upabase.server";
+import { arraysHaveCommonElements } from "~/utils/keywordsSimilarity";
+import { getSession } from "~/services/session.server";
+import { useProfile } from "~/context/ProfileContext";
+import { Story } from "~/types";
 
 export const action: ActionFunction = async ({ request }) => {
   const words = ["صداقة", "عائلة", "أهل", "محبة"];
@@ -20,12 +26,53 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { supabase } = createSupabaseServerClient(request);
+  const session = await getSession(request.headers.get("Cookie"));
+  const profileId = session.get("profileId");
+
+  const { data: stories, error: userStoriesError } =
+    (await supabase.from("stories").select("*").eq("user_id", profileId)) ?? [];
+
+  if (userStoriesError) {
+    console.error("Error fetching user stories:", userStoriesError.message);
+    return json({ error: "Failed to load stories" }, { status: 500 });
+  }
+
+  const userKeywords = stories.flatMap((story) => story.keywords);
+
+  const { data: otherStories, error: otherStoriesError } = await supabase
+    .from("stories")
+    .select("*")
+    .neq("user_id", profileId);
+
+  if (otherStoriesError) {
+    console.error("Error fetching other stories:", otherStoriesError.message);
+    return json({ error: "Failed to load other stories" }, { status: 500 });
+  }
+
+  const storiesForYou = otherStories.filter((story) =>
+    arraysHaveCommonElements(story.keywords, userKeywords)
+  );
+
+  return json({ stories, storiesForYou });
+};
+
 const StoriesPage = () => {
   const actionData: any | undefined = useActionData();
+  const profile = useProfile();
+  let { t } = useTranslation("stories");
+  const { stories, storiesForYou, error }: any = useLoaderData();
 
-  let { t } = useTranslation("story");
-  const displayName = "Marwen";
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+  const name = profile?.display_name.split(" ")[0];
   const colors = [
+    "bg-orange-200",
+    "bg-violet-200",
+    "bg-green-300",
+    "bg-blue-300",
     "bg-amber-300",
     "bg-sky-300",
     "bg-emerald-300",
@@ -33,55 +80,12 @@ const StoriesPage = () => {
     "bg-lime-400",
     "bg-teal-800",
   ];
-  const stories = [
-    {
-      title: "My Last Story",
-      brief: "This is the last story I wrote",
-      id: 0,
-    },
-    {
-      title: "Second One",
-      brief: "This is the second story I wrote",
-      id: 1,
-    },
-    {
-      title: "The Start!",
-      brief:
-        "This is the start of imagination, this is the start of creativity!",
-      id: 2,
-    },
-  ];
-  const forYou = [
-    {
-      title: "Chosen Story 1",
-      id: 0,
-      brief: "This is the first of the chosen stories",
-    },
-    {
-      title: "Second of Chosen!",
-      id: 1,
-      brief: "This is the second of the chosen stories",
-    },
-    {
-      title: "Another Chosen Story",
-      id: 2,
-      brief: "This is the third of the chosen stories",
-    },
-    {
-      title: "Best of Chosen Story",
-      id: 3,
-      brief: "This is the fourth of the chosen stories",
-    },
-    {
-      title: "The Last of All",
-      id: 4,
-      brief: "This is the last of the chosen stories",
-    },
-  ];
+
+  const forYou = storiesForYou;
 
   if (actionData) {
     stories.unshift({
-      title: "Generated Story",
+      title: t("generated-story-title"),
       brief: actionData.story,
       id: 2,
     });
@@ -99,22 +103,19 @@ const StoriesPage = () => {
 
   function getStory(key: number) {
     if (type === 0) {
-      return stories[key];
+      return stories.find((story: Story) => story.id === key);
     } else {
-      return forYou[key];
+      return forYou.find((story: Story) => story.id === key);
     }
   }
 
   return (
-    <div className="flex ">
-      <div className="flex flex-col gap-10 w-3/5">
+    <section className="flex ">
+      <section className="flex flex-col gap-10 w-3/5">
         <h1 className="text-5xl w-80 text-slate-800  ">
-          Happy reading, {displayName}
+          {t("happy-reading", { name: name })}
         </h1>
-        <p className="text-slate-800 w-1/2 ">
-          Wow!, You've achieved a lot today, let's celebrate by generating a
-          story with the words you learned so far.
-        </p>
+        <p className="text-slate-800 w-1/2 ">{t("achievements-celebrate")}</p>
         <Form method="post" className="flex flex-col gap-4">
           <button
             className="w-40 rounded-full bg-slate-800 text-white h-10"
@@ -124,43 +125,49 @@ const StoriesPage = () => {
           </button>
         </Form>
 
-        <h2 className="text-3xl text-slate-800">Your Latest Stories</h2>
+        <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>
         <div className="flex gap-10  overflow-x-scroll w-screen/2">
-          {stories.map((story, idx) => (
-            <div
-              key={idx}
-              onClick={() => {
-                selectStory(0, story.id);
-              }}
-            >
+          {stories.length ? (
+            stories.map((story: Story) => (
               <div
-                className={`cover cursor-pointer shadow-xl h-40 w-28  ${
-                  colors[idx % 6]
-                } text-center p-2 text-white mb-3`}
+                key={story.id}
+                onClick={() => {
+                  selectStory(0, story.id);
+                }}
               >
-                <h4>{story.title}</h4>
+                <div
+                  className={`cover cursor-pointer shadow-xl h-40 w-28  ${
+                    colors[story.id % 6]
+                  } text-center p-2 text-white mb-3`}
+                >
+                  <h4>{story.title}</h4>
+                </div>
+                <h4 className="cursor-pointer w-28">{story.title}</h4>
               </div>
-              <h4 className="cursor-pointer w-28">{story.title}</h4>
+            ))
+          ) : (
+            <div>
+              <h2>{t("no-stories")}</h2>
             </div>
-          ))}
+          )}
         </div>
         <div>
-          <h2 className="text-3xl text-slate-800">For You!</h2>
+          <h2 className="text-3xl text-slate-800">{t("for-you")}</h2>
           <h2 className="text-md mt-[-5px] text-slate-600">
-            | Stories By Others
+            | {t("stories-by-others")}
           </h2>
         </div>
         <div className="flex gap-10  overflow-x-scroll w-full">
-          {forYou.map((story, idx) => (
+          {forYou.map((story: Story) => (
             <div
-              key={idx}
+              key={story.id}
               onClick={() => {
                 selectStory(1, story.id);
               }}
             >
               <div
                 className={`cover cursor-pointer shadow-xl h-40 w-28 ${
-                  colors[idx % 6]
+                  colors[story.id % 6]
                 } text-center p-2 text-white mb-3`}
               >
                 <h4>{story.title}</h4>
@@ -177,12 +184,12 @@ const StoriesPage = () => {
         )}
 
         {actionData?.error && <p>Error: {actionData.error}</p>}
-      </div>
-      {selected != null ? (
-        <div className="w-2/5 fixed right-0 top-0 bg-white h-full p-16">
+      </section>
+      {selected ? (
+        <section className="w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16">
           <div className="flex gap-4">
             <div
-              className={`cover ml-[-7rem] cursor-pointer shadow-xl h-40 w-28 ${
+              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer shadow-xl h-40 w-28 ${
                 colors[selected % 6]
               } text-center p-2 text-white`}
             >
@@ -197,15 +204,15 @@ const StoriesPage = () => {
                 className="w-40 rounded-full bg-slate-800 text-white h-10"
                 type="submit"
               >
-                Read Story
+                {t("read-story")}
               </button>
             </div>
           </div>
-        </div>
+        </section>
       ) : (
         ""
       )}
-    </div>
+    </section>
   );
 };
 

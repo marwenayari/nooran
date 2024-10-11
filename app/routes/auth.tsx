@@ -1,5 +1,5 @@
 import { json, redirect } from "@remix-run/node";
-import { getSession, commitSession } from "~/session.server";
+import { getSession, commitSession } from "~/services/session.server";
 import { Form, useActionData } from "@remix-run/react";
 import { createSupabaseServerClient } from "~/services/upabase.server";
 
