@@ -4,6 +4,7 @@ import {
   useNavigate,
   useSearchParams,
   useLoaderData,
+  useNavigation,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { json, ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
@@ -16,12 +17,13 @@ import { Story } from "~/types";
 import { getStoryCover } from "~/utils/colors";
 
 export const action: ActionFunction = async ({ request }) => {
-  const words = ["صداقة", "عائلة", "أهل", "محبة"];
-  const age = 9;
+  const words = ["عطلة", "مدرسة", "أهل", "أخوة", "أخت", "أب", "أم"];
+  const age = 8;
 
   try {
     const story = await loadStory(words, age);
-    return json({ story });
+    console.log(JSON.parse(story));
+    return json(JSON.parse(story));
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });
   }
@@ -64,6 +66,8 @@ const StoriesPage = () => {
   const profile = useProfile();
   let { t } = useTranslation("stories");
   const { stories, storiesForYou, error }: any = useLoaderData();
+  const navigation = useNavigation();
+  const loading = navigation.state !== "idle";
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -73,27 +77,32 @@ const StoriesPage = () => {
 
   if (actionData) {
     stories.unshift({
-      title: t("generated-story-title"),
-      brief: actionData.story,
-      id: 2,
+      title: "actionData.title",
+      brief: "actionData.brief",
+      id: 10,
     });
+    console.log(JSON.parse(actionData.story));
+
+    // inside if (actionData) block, send to supabase stories page instead of stories array
   }
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const type = parseInt(searchParams.get("type") || "0");
-  const selected = parseInt(searchParams.get("selected") || "0");
+  const type = parseInt(searchParams.get("type") || "-1");
+  const selected = parseInt(searchParams.get("selected") || "-1");
 
   function selectStory(type: number, key: number) {
     navigate("/stories?type=" + type + "&selected=" + key);
   }
 
   function getStory(key: number) {
+    console.log(stories);
+    console.log(stories[key]);
     if (type === 0) {
-      return stories.find((story: Story) => story.id === key);
+      return stories[key];
     } else {
-      return forYou.find((story: Story) => story.id === key);
+      return forYou[key];
     }
   }
 
@@ -115,16 +124,37 @@ const StoriesPage = () => {
 
         <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>
         <div className="flex gap-10  overflow-x-scroll w-screen/2">
+          {loading ? (
+            <div className="h-40 w-28 ">
+              <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto mb-3 h-40">
+                <div className="animate-pulse flex space-x-4">
+                  <div className="flex-1 space-y-6 py-1">
+                    <div className="h-3 bg-slate-200 rounded"></div>
+                    <div className="space-y-4 pt-4">
+                      <div className="flex flex-col justify-center items-center gap-4">
+                        <div className="rounded-full bg-slate-200 h-10 w-10"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right relative pt-2">
+                <div className="h-3 bg-slate-200 rounded col-span-2 w-2/3 right-0 absolute"></div>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
           {stories.length ? (
             stories.map((story: Story, idx: number) => (
               <div
                 key={story.id}
                 onClick={() => {
-                  selectStory(0, story.id);
+                  selectStory(0, idx);
                 }}
               >
                 <div
-                  className={`cover cursor-pointer shadow-xl h-40 w-28  ${getStoryCover(
+                  className={`cover cursor-pointer shadow-xl h-40 w-28 rounded-md  ${getStoryCover(
                     idx
                   )} text-center p-2 text-white mb-3`}
                 >
@@ -146,16 +176,16 @@ const StoriesPage = () => {
           </h2>
         </div>
         <div className="flex gap-10  overflow-x-scroll w-full">
-          {forYou.map((story: Story) => (
+          {forYou.map((story: Story, idx: number) => (
             <div
               key={story.id}
               onClick={() => {
-                selectStory(1, story.id);
+                selectStory(1, idx);
               }}
             >
               <div
-                className={`cover cursor-pointer shadow-xl h-40 w-28 ${getStoryCover(
-                  story.id
+                className={`cover cursor-pointer shadow-xl rounded-md h-40 w-28 ${getStoryCover(
+                  idx
                 )} text-center p-2 text-white mb-3`}
               >
                 <h4>{story.title}</h4>
@@ -173,11 +203,11 @@ const StoriesPage = () => {
 
         {actionData?.error && <p>Error: {actionData.error}</p>}
       </section>
-      {selected ? (
+      {selected != -1 ? (
         <section className="w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16">
           <div className="flex gap-4">
             <div
-              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer shadow-xl h-40 w-28 ${getStoryCover(
+              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer rounded-md shadow-xl h-40 w-28 ${getStoryCover(
                 selected
               )} text-center p-2 text-white`}
             >
