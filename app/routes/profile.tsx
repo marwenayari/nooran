@@ -1,23 +1,12 @@
-import { FC } from "react";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { useProfile } from "~/context/ProfileContext";
+import { Profile } from "~/types";
 
-interface UserProfile {
-  username: string;
-  email: string;
-}
-
-export const loader = async () => {
-  const userProfile: UserProfile = {
-    username: "marwen",
-    email: "marwenayarimail@gmail.com",
-  };
-  return userProfile;
-};
-
-const Profile: FC = () => {
+const ProfilePage = () => {
   let { t } = useTranslation("profile");
-  const userProfile = useLoaderData<UserProfile>();
+  const profile: Profile | null = useProfile();
+  const name = profile?.display_name || "";
 
   return (
     <div className="profile-settings">
@@ -30,7 +19,7 @@ const Profile: FC = () => {
             type="text"
             id="username"
             name="username"
-            defaultValue={userProfile.username}
+            defaultValue={name}
           />
         </div>
         <div className="form-group">
@@ -40,7 +29,7 @@ const Profile: FC = () => {
             type="email"
             id="email"
             name="email"
-            defaultValue={userProfile.email}
+            defaultValue={name}
           />
         </div>
         <button type="submit">{t("common:save")}</button>
@@ -49,4 +38,4 @@ const Profile: FC = () => {
   );
 };
 
-export default Profile;
+export default ProfilePage;

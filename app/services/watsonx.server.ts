@@ -12,7 +12,7 @@ export function createWatsonxAIService() {
   });
 }
 
-export const loadStory = async (words: string[], subject: string) => {
+export const loadStory = async (words: string[], age: number) => {
   const watsonxAIService = createWatsonxAIService();
 
   const textGenRequestParametersModel = {
@@ -24,7 +24,7 @@ export const loadStory = async (words: string[], subject: string) => {
     temperature: 0.3,
   };
   const inputText = ` الكلمات: ${words.join(", ")}
-    الموضوع: ${subject}`;
+    العمر: ${age}`;
 
   const params = {
     input: `<<SYS>>${systemPrompt}<<SYS>>[INST]${inputText}[/INST]`,
@@ -36,6 +36,11 @@ export const loadStory = async (words: string[], subject: string) => {
   try {
     console.log("Generating text...");
     const response = await watsonxAIService.generateText(params);
+    console.log("***** WATSONX *****");
+    console.log(
+      "response.result.results[0].generated_text ",
+      response.result.results[0].generated_text
+    );
     return response.result.results[0].generated_text;
   } catch (error) {
     console.error("Error generating text:", error);
