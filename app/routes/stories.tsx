@@ -9,7 +9,12 @@ import {
   ShouldRevalidateFunction,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import { json, ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  ActionFunction,
+  LoaderFunctionArgs,
+  redirect,
+} from "@remix-run/node";
 import { loadStory } from "~/services/watsonx.server";
 import { createSupabaseServerClient } from "~/services/upabase.server";
 import { arraysHaveCommonElements } from "~/utils/keywordsSimilarity";
@@ -18,23 +23,54 @@ import { useProfile } from "~/context/ProfileContext";
 import { Story } from "~/types";
 import { getStoryCover } from "~/utils/colors";
 
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentUrl,
+  nextUrl,
+  formAction,
+  formMethod,
+}) => {
+  if (formAction || formMethod) {
+    return true;
+  }
+  return nextUrl.pathname != currentUrl.pathname;
+};
+
 export const action: ActionFunction = async ({ request }) => {
   const words = ["مزرعة", "دجاج", "ابقار", "خرفان", "حيوانات", "فلاحة"];
   const age = 12;
 
+  const session = await getSession(request.headers.get("Cookie"));
+  const profileId = session.get("profileId");
+
+  if (!profileId) {
+    return json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const story = await loadStory(words, age);
-    return json({ story });
+    const { supabase } = createSupabaseServerClient(request);
+    const storyObject = JSON.parse(story);
+    const { error } = await supabase.from("stories").insert([
+      {
+        title: storyObject.title,
+        title_en: storyObject.title_en,
+        brief: storyObject.brief,
+        brief_en: storyObject.brief_en,
+        content: storyObject.content,
+        content_en: storyObject.content_en,
+        user_id: profileId,
+        keywords: words,
+      },
+    ]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return redirect("/stories");
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });
   }
-};
-
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-  currentUrl,
-  nextUrl,
-}) => {
-  return nextUrl.pathname != currentUrl.pathname;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -42,8 +78,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const profileId = session.get("profileId");
 
-  const { data: stories, error: userStoriesError } =
-    (await supabase.from("stories").select("*").eq("user_id", profileId)) ?? [];
+  const { data: stories, error: userStoriesError } = await supabase
+    .from("stories")
+    .select("*")
+    .eq("user_id", profileId)
+    .order("created_at", { ascending: false });
 
   if (userStoriesError) {
     console.error("Error fetching user stories:", userStoriesError.message);
@@ -70,7 +109,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const StoriesPage = () => {
-  const actionData: any | undefined = useActionData();
   const profile = useProfile();
   let { t } = useTranslation("stories");
   const { stories, storiesForYou, error }: any = useLoaderData();
@@ -82,19 +120,6 @@ const StoriesPage = () => {
   }
   const name = profile?.display_name.split(" ")[0];
   const forYou = storiesForYou;
-
-  if (actionData) {
-    const story = JSON.parse(actionData.story);
-    stories.unshift({
-      title: story.title,
-      brief: story.brief,
-      content: story.content,
-      id: 10,
-    });
-
-    // inside if (actionData) block, send to supabase stories page instead of stories array
-    // await supabase.from("stories").insert([
-  }
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -125,8 +150,10 @@ const StoriesPage = () => {
         <Form method="post" className="flex flex-col gap-4">
           <button
             className="w-40 rounded-full bg-slate-800 text-white h-10"
+            disabled={loading}
             type="submit"
           >
+            <span className="loader"></span>
             {t("generate-story")}{" "}
           </button>
         </Form>
@@ -169,9 +196,11 @@ const StoriesPage = () => {
                 </div>
                 <Link
                   to={"/stories?type=0" + "&selected=" + idx}
-                  className="cursor-pointer w-28"
+                  className="cursor-pointer w-28 rtl"
                 >
-                  {story.title}
+                  {story.title.length <= 15
+                    ? story.title
+                    : "..." + story.title.substring(0, 15)}
                 </Link>
               </div>
             ))
@@ -207,13 +236,13 @@ const StoriesPage = () => {
           ))}
         </div>
 
-        {actionData?.story && (
+        {/* {actionData?.story && (
           <div className="mt-4">
             <p>{actionData.story}</p>
           </div>
-        )}
+        )} */}
 
-        {actionData?.error && <p>Error: {actionData.error}</p>}
+        {/* {actionData?.error && <p>Error: {actionData.error}</p>} */}
       </section>
       {selected != -1 ? (
         <section className="w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16">
