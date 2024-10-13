@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import {Link, useLoaderData} from "@remix-run/react";
 import { getCourseBgFull } from "~/utils/colors";
 
 const courses = [
@@ -116,14 +116,15 @@ const CoursePage = () => {
       </div>
       <div className="path lessons flex flex-col gap-8 justify-between pt-8 pb-4">
         {lessons.map((lesson, idx) => (
-          <div
+          <Link
+              to={`/lessons/${lesson.id}`}
             key={lesson.id}
             className={`flex items-center justify-center shadow-lg shadow-slate-400 rounded-full w-16 h-16 ${getBg(
               lesson
             )} ${getMarginLeft(idx)}`}
           >
             <i className="text-4xl text-white ri-star-fill cursor-pointer"></i>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
