@@ -36,6 +36,11 @@ export const loadStory = async (words: string[], age: number) => {
   try {
     console.log("Generating text...");
     const response = await watsonxAIService.generateText(params);
+    console.log("***** WATSONX *****");
+    console.log(
+      "response.result.results[0].generated_text ",
+      response.result.results[0].generated_text
+    );
     return response.result.results[0].generated_text;
   } catch (error) {
     console.error("Error generating text:", error);

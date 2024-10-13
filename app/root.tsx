@@ -18,7 +18,7 @@ import i18next from "~/i18n/i18next.server";
 import { useTranslation } from "react-i18next";
 import SideBar from "./components/SideBar";
 import SideMenu from "./components/SideMenu";
-import { useLocation } from "react-router-dom";
+import { ShouldRevalidateFunction, useLocation } from "react-router-dom";
 import { createSupabaseServerClient } from "./services/upabase.server";
 import ProfileContext from "./context/ProfileContext";
 
@@ -34,6 +34,10 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({}) => {
+  return false;
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));

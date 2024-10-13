@@ -5,6 +5,8 @@ import {
   useSearchParams,
   useLoaderData,
   useNavigation,
+  Link,
+  ShouldRevalidateFunction,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { json, ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
@@ -17,16 +19,22 @@ import { Story } from "~/types";
 import { getStoryCover } from "~/utils/colors";
 
 export const action: ActionFunction = async ({ request }) => {
-  const words = ["عطلة", "مدرسة", "أهل", "أخوة", "أخت", "أب", "أم"];
-  const age = 8;
+  const words = ["مزرعة", "دجاج", "ابقار", "خرفان", "حيوانات", "فلاحة"];
+  const age = 12;
 
   try {
     const story = await loadStory(words, age);
-    console.log(JSON.parse(story));
-    return json(JSON.parse(story));
+    return json({ story });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });
   }
+};
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentUrl,
+  nextUrl,
+}) => {
+  return nextUrl.pathname != currentUrl.pathname;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -76,14 +84,16 @@ const StoriesPage = () => {
   const forYou = storiesForYou;
 
   if (actionData) {
+    const story = JSON.parse(actionData.story);
     stories.unshift({
-      title: "actionData.title",
-      brief: "actionData.brief",
+      title: story.title,
+      brief: story.brief,
+      content: story.content,
       id: 10,
     });
-    console.log(JSON.parse(actionData.story));
 
     // inside if (actionData) block, send to supabase stories page instead of stories array
+    // await supabase.from("stories").insert([
   }
 
   const navigate = useNavigate();
@@ -94,11 +104,10 @@ const StoriesPage = () => {
 
   function selectStory(type: number, key: number) {
     navigate("/stories?type=" + type + "&selected=" + key);
+    // use client side navigation to /stories?type=" + type + "&selected=" + keylike if using <Link> in html
   }
 
   function getStory(key: number) {
-    console.log(stories);
-    console.log(stories[key]);
     if (type === 0) {
       return stories[key];
     } else {
@@ -147,20 +156,23 @@ const StoriesPage = () => {
           )}
           {stories.length ? (
             stories.map((story: Story, idx: number) => (
-              <div
-                key={story.id}
-                onClick={() => {
-                  selectStory(0, idx);
-                }}
-              >
+              <div key={story.id}>
                 <div
+                  onClick={() => {
+                    selectStory(0, idx);
+                  }}
                   className={`cover cursor-pointer shadow-xl h-40 w-28 rounded-md  ${getStoryCover(
                     idx
                   )} text-center p-2 text-white mb-3`}
                 >
                   <h4>{story.title}</h4>
                 </div>
-                <h4 className="cursor-pointer w-28">{story.title}</h4>
+                <Link
+                  to={"/stories?type=0" + "&selected=" + idx}
+                  className="cursor-pointer w-28"
+                >
+                  {story.title}
+                </Link>
               </div>
             ))
           ) : (
@@ -218,10 +230,7 @@ const StoriesPage = () => {
                 {getStory(selected).title}
               </h2>
               <p className="text-slate-800 ">{getStory(selected).brief}</p>
-              <button
-                className="w-40 rounded-full bg-slate-800 text-white h-10"
-                type="submit"
-              >
+              <button className="w-40 rounded-full bg-slate-800 text-white h-10">
                 {t("read-story")}
               </button>
             </div>
