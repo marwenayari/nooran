@@ -1,0 +1,17 @@
+{
+  "basic": "Basic",
+  "pro": "Pro",
+  "enterprise": "Enterprise",
+  "1User": "1 User",
+  "basicSupport": "Basic Support",
+  "unlimitedQuizzes": "Unlimited Quizzes",
+  "unlimitedStories": "Unlimited Stories",
+  "5Devices": "5 Devices",
+  "prioritySupport": "Priority Support",
+  "unlimitedUsers": "Unlimited Users",
+  "enterpriseSupport": "Enterprise Support",
+  "enterpriseCustomization": "Enterprise Customization",
+  "free": "Free",
+  "choosePlan": "Choose Plan",
+  "proceed": "Proceed"
+}
