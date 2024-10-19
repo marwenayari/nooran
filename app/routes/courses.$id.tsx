@@ -81,6 +81,36 @@ const lessons = [
     duration: "5:00",
     course_id: 0,
   },
+  {
+    id: 5,
+    title: "Introduction",
+    duration: "5:00",
+    course_id: 0,
+  },
+  {
+    id: 6,
+    title: "Introduction",
+    duration: "5:00",
+    course_id: 0,
+  },
+  {
+    id: 7,
+    title: "Introduction",
+    duration: "5:00",
+    course_id: 0,
+  },
+  {
+    id: 8,
+    title: "Introduction",
+    duration: "5:00",
+    course_id: 0,
+  },
+  {
+    id: 9,
+    title: "Introduction",
+    duration: "5:00",
+    course_id: 0,
+  },
 ];
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json(courses.find((course, idx) => course.id === Number(params.id)));
@@ -96,9 +126,11 @@ const CoursePage = () => {
     return "bg-gray-200";
   };
 
-  const getMarginLeft = (idx: number) => {
-    const mls = ["ml-0", "ml-[-2rem]", "ml-[-4rem]", "ml-[-2rem]", "ml-0"];
-    return mls[idx];
+  const getMarginLeft = (index: number) => {
+    const mod  = index % 6;
+    console.log('mod', index, mod)
+    const mls = ["ml-0 rtl:mr-0", "ml-[-2rem] rtl:ml-0 rtl:mr-[-2rem]", "ml-[-4rem] rtl:ml-0 rtl:mr-[-4rem]", "ml-[-2rem] rtl:ml-0 rtl:mr-[-2rem]", "ml-0 rtl:mr-0", "ml-[2rem] rtl:ml-0 rtl:mr-[2rem]", "ml-[4rem] rtl:ml-0 rtl:mr-[4rem]"];
+    return mls[index  % 6];
   };
 
   return (
