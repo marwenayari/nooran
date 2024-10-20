@@ -10,7 +10,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 const CoursePage = () => {
-  let course = useLoaderData();
+  const course = useLoaderData();
 
 
   const getMarginLeft = (index: number) => {
