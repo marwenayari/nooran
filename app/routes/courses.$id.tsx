@@ -127,8 +127,6 @@ const CoursePage = () => {
   };
 
   const getMarginLeft = (index: number) => {
-    const mod  = index % 6;
-    console.log('mod', index, mod)
     const mls = ["ml-0 rtl:mr-0", "ml-[-2rem] rtl:ml-0 rtl:mr-[-2rem]", "ml-[-4rem] rtl:ml-0 rtl:mr-[-4rem]", "ml-[-2rem] rtl:ml-0 rtl:mr-[-2rem]", "ml-0 rtl:mr-0", "ml-[2rem] rtl:ml-0 rtl:mr-[2rem]", "ml-[4rem] rtl:ml-0 rtl:mr-[4rem]"];
     return mls[index  % 6];
   };
