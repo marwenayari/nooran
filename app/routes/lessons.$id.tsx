@@ -61,15 +61,33 @@ const LessonPage = () => {
                     <>
                         <div className="py-8 w-full flex flex-grow max-w-[768px] mx-auto items-center">
                             <div className="block w-full">
-                                <h3 className="font-bold text-xl text-right">{currentChallenge.question}</h3>
-                                <div className="text-right flex flex-col my-4">
-                                    {
-                                        currentChallenge.options.map(option => (
-                                            <button onClick={() => setCurrentAnswer(option.id)} key={option.id}
-                                                    className={`inline-block p-4 rounded-md text-center my-2 cursor-pointer ${currentAnswer === option.id ? 'text-white bg-green-400' : 'bg-gray-200 text-gray-600'}`}>{option.text}</button>
-                                        ))
-                                    }
+                                <h3 className="font-bold text-xl mb-4">{currentChallenge.question}</h3>
+                                <div className="grid grid-cols-2 gap-3">
+
+                                        <div className="relative">
+                                            { currentChallenge.audio && (
+                                            < i onClick={() => {
+                                                let audio = new Audio(currentChallenge.audio);
+                                                audio.play();
+                                            }} className="ri-volume-up-line text-2xl cursor-pointer absolute top-2 right-2 bg-gray-100 p-2 rounded-md"></i>
+                                            )}
+                                            {currentChallenge.imageSource && (
+                                            <img className="rounded-xl border-2" width="100%"
+                                                 src={currentChallenge.imageSource} alt=""/>)}
+                                        </div>
+
+                                    <div className="flex flex-col my-4">
+                                        {
+                                            currentChallenge.options.map(option => (
+                                                <button onClick={() => setCurrentAnswer(option.id)} key={option.id}
+                                                        className={`inline-block p-4 rounded-md border-2 border-b-4 text-center font-bold my-2 cursor-pointer ${currentAnswer === option.id ? 'bg-green-400 bg-opacity-20 text-green-500 border-green-500' : 'bg-transparent text-gray-600'}`}>{option.text}</button>
+                                            ))
+                                        }
+                                    </div>
+
+
                                 </div>
+
                             </div>
 
                         </div>
