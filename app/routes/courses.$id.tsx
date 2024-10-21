@@ -1,16 +1,17 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import {Link, useLoaderData} from "@remix-run/react";
 import {createSupabaseServerClient} from "~/services/upabase.server";
+import {CourseDetails, toCourseDetails} from "~/models/CourseDetails";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const {supabase} = createSupabaseServerClient(request);
-  const {data} = await supabase.from('courses').select('id, title, color, lessons(id, title)').match({id: Number(params['id'])}).single();
-  return json(data);
+  const {data} = await supabase.from('courses').select('id, title, progress_color, lessons(id, title)').match({id: Number(params['id'])}).single();
+  return json(toCourseDetails(data));
 };
 
 const CoursePage = () => {
-  const course = useLoaderData();
+  const course = useLoaderData<CourseDetails>();
 
 
   const getMarginLeft = (index: number) => {
@@ -23,7 +24,7 @@ const CoursePage = () => {
       <div
         className={`w-2/3 rounded-lg p-2 text-white`}
         style={{
-          backgroundColor: course.color
+          backgroundColor: course.progressColor
         }}
       >
         <div className=" flex items-center">
@@ -42,7 +43,7 @@ const CoursePage = () => {
             key={lesson.id}
             className={`flex items-center justify-center shadow-lg shadow-slate-400 rounded-full w-16 h-16 ${getMarginLeft(idx)}`}
               style={{
-                backgroundColor: course.color
+                backgroundColor: course.progressColor
               }}
           >
             <i className="text-4xl text-white ri-star-fill cursor-pointer"></i>

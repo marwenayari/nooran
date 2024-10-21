@@ -2,6 +2,7 @@ import {json, LoaderFunction, MetaFunction} from "@remix-run/node";
 import {Link, useLoaderData} from "@remix-run/react";
 import {useTranslation} from "react-i18next";
 import {createSupabaseServerClient} from "~/services/upabase.server";
+import {CourseSummary, toCourseSummary} from "~/models/CourseSummary";
 
 export const meta: MetaFunction = () => {
   return [
@@ -39,7 +40,7 @@ export const loader: LoaderFunction = async ({request}) => {
 
   const {data} = await supabase.from('courses').select()
 
-  return json(data);
+  return json(data?.map(toCourseSummary));
 };
 
 export default function Index() {
@@ -50,7 +51,7 @@ export default function Index() {
   }
 
   const levels = ['beginner','intermediate','advanced']
-  const courses = useLoaderData();
+  const courses = useLoaderData<CourseSummary[]>();
 
   return (
     <div>
@@ -87,7 +88,7 @@ export default function Index() {
               to={"/courses/" + course.id}
             >
               <div className="flex justify-between items-center">
-                <span className="uppercase text-sm">{t(levels[course.level-1])} </span>
+                <span className="uppercase text-sm">{t(course.level)} </span>
                 <span className="bg-white rounded-xl w-12 flex items-center justify-center">
                   <span>4.8</span>
                   <i className="ri-star-fill text-yellow-400 mx-1/2"></i>
