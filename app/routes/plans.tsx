@@ -114,7 +114,7 @@ const PlansPage = () => {
 
   return (
     <section className="w-screen h-screen flex flex-col items-center pt-10">
-      <div className="pb-3 px-3 flex gap-x-7 items-center justify-end max-w-[1140px] mx-auto w-full">
+      <div className="pb-3 flex gap-x-7 items-center justify-end max-w-[1140px] mx-auto w-full px-10">
         <i
           onClick={() => {
             navigate(`/courses/1`);
@@ -160,7 +160,7 @@ const PlansPage = () => {
           </div>
         ))}
       </div>
-      <div className={`${bgColors[selectedPlan]} w-full p-4`}>
+      <div className={`${bgColors[selectedPlan]} w-full py-4 px-10`}>
         <div className="max-w-[1140px] mx-auto flex justify-end">
           <button
             disabled={selectedPlan === null}

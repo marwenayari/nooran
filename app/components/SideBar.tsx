@@ -52,7 +52,7 @@ export default function SideBar() {
             onClick={() => {
               navigate("/profile");
             }}
-            className="ri-1 ri-edit-circle-fill cursor-pointer"
+            className="ri-1 ri-edit-circle-fill cursor-pointer text-zinc-700"
           ></i>
           {displayName}{" "}
           <i
