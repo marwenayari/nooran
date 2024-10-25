@@ -159,7 +159,7 @@ const StoriesPage = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.8"
-                className="w-6 h-6 stroke-yellow-400 group-hover:stroke-yellow-500 group-hover:stroke-{1.99}"
+                className="w-6 h-6 mr-1 stroke-yellow-400 group-hover:stroke-yellow-500 group-hover:stroke-{1.99}"
               >
                 <path
                   stroke-linecap="round"
@@ -170,7 +170,8 @@ const StoriesPage = () => {
               {t("generate-story")}
             </span>
           </button>
-          <button className="w-48 brightness-150 dark:brightness-100 group hover:shadow-lg hover:shadow-yellow-700/60 transition ease-in-out hover:scale-105 p-1 rounded-3xl bg-gradient-to-br from-yellow-800 via-yellow-600 to-yellow-800 hover:from-yellow-700 hover:via-yellow-800 hover:to-yellow-600">
+          {/* TODO: Delete if will not use*/}
+          {/* <button className="w-48 brightness-150 dark:brightness-100 group hover:shadow-lg hover:shadow-yellow-700/60 transition ease-in-out hover:scale-105 p-1 rounded-3xl bg-gradient-to-br from-yellow-800 via-yellow-600 to-yellow-800 hover:from-yellow-700 hover:via-yellow-800 hover:to-yellow-600">
             <div className="px-6 py-2 backdrop-blur-xl bg-black/80 rounded-3xl font-bold ">
               <div className="group-hover:scale-100 flex group-hover:text-yellow-500 text-yellow-600 font-medium gap-1">
                 <svg
@@ -189,7 +190,7 @@ const StoriesPage = () => {
                 {t("generate-story")}
               </div>
             </div>
-          </button>
+          </button> */}
         </Form>
 
         <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>

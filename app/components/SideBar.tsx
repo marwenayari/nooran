@@ -59,7 +59,7 @@ export default function SideBar() {
             onClick={() => {
               navigate("/plans");
             }}
-            className="ri-1 text-amber-400 ri-star-fill cursor-pointer"
+            className="ri-1 text-amber-500 ri-vip-crown-fill cursor-pointer"
           ></i>
         </h3>
       )}
