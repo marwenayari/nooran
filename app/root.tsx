@@ -88,6 +88,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const location = useLocation();
   const isAuthPage = location.pathname === "/auth";
+  const fullScreenPaths = ["/lessons", "/plans"];
+  const isFullScreen = fullScreenPaths.some((value) =>
+    location.pathname.startsWith(value)
+  );
 
   return (
     <html lang={locale} dir={i18n.dir()}>
@@ -104,17 +108,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </main>
         ) : (
           <ProfileContext.Provider value={profile}>
-            <section
-              className="
+            {isFullScreen && (
+              <section className="h-full w-full">{children}</section>
+            )}
+            {!isFullScreen && (
+              <section
+                className="
             flex flex-col-reverse md:flex-row lg:flex-row items-center
             w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden"
-            >
-              <SideMenu />
-              <section className="h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll">
-                {children}
+              >
+                <SideMenu />
+                <section className="h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll">
+                  {children}
+                </section>
+                <SideBar />
               </section>
-              <SideBar />
-            </section>
+            )}
           </ProfileContext.Provider>
         )}
         <ScrollRestoration />

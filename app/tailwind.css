@@ -7,6 +7,11 @@
 html,
 body {
   background-color: #fcf8f6;
+  background-image: url("/img/bg.png");
+  background-size: 250px;
+  background-blend-mode: overlay;
+  background-blend-mode: lighten;
+
   @apply dark:bg-gray-700;
   font-family: "Cairo";
 

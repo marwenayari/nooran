@@ -17,13 +17,16 @@ export const loadStory = async (words: string[], age: number) => {
 
   const textGenRequestParametersModel = {
     decoding_method: "greedy",
-    max_new_tokens: 900,
+    max_new_tokens: 1200,
     min_new_tokens: 0,
     stop_sequences: [],
-    repetition_penalty: 1,
-    temperature: 0.3,
+    repetition_penalty: 1.0,
+    temperature: 0.2,
   };
-  const inputText = ` الكلمات: ${words.join(", ")}
+  const inputText = ` 
+    باستخدام الكلمات التالية، قم باكمال القصة التالية
+    كان يامكان، كان هناك 
+    الكلمات: ${words.join(", ")}
     العمر: ${age}`;
 
   const params = {

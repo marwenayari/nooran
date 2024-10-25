@@ -1,6 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { createSupabaseServerClient } from "~/services/upabase.server";
+import { CourseSummary, toCourseSummary } from "~/models/CourseSummary";
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,48 +33,17 @@ const categories = [
     key: 5,
   },
 ];
-const courses = [
-  {
-    title: "Arabic 101",
-    description: "Learn the basics of Arabic",
-    level: "beginner",
-    rate: 4.6,
-    price: 0,
-    color: "bg-red-200",
-  },
-  {
-    title: "Arabic 201",
-    description: "Learn the intermediate level of Arabic",
-    level: "intermediate",
-    rate: 4.8,
-    price: 0,
-    color: "bg-orange-200",
-  },
-  {
-    title: "Arabic 301",
-    description: "Learn the advanced level of Arabic",
-    level: "advanced",
-    rate: 4.8,
-    price: 200,
-    color: "bg-violet-200",
-  },
-  {
-    title: "Arabic Verbs",
-    description: "Learn the advanced level of Arabic",
-    level: "advanced",
-    rate: 4.8,
-    price: 150,
-    color: "bg-green-200",
-  },
-  {
-    title: "Long Phrases",
-    description: "Learn the advanced level of Arabic",
-    level: "advanced",
-    rate: 4.8,
-    price: 90,
-    color: "bg-blue-200",
-  },
-];
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const { supabase } = createSupabaseServerClient(request);
+
+  const { data } = await supabase
+    .from("courses")
+    .select()
+    .order("created_at", { ascending: true });
+
+  return json(data?.map(toCourseSummary));
+};
 
 export default function Index() {
   let { t } = useTranslation("home");
@@ -80,6 +51,9 @@ export default function Index() {
   function selectCategory(key: number) {
     selected = key;
   }
+
+  const levels = ["beginner", "intermediate", "advanced"];
+  const courses = useLoaderData<CourseSummary[]>();
 
   return (
     <div>
@@ -108,14 +82,17 @@ export default function Index() {
             <Link
               className={`
                 flex flex-col justify-between cursor-pointer p-2 md:-4 lg:p-4 xl:p-4 rounded-xl
-                h-40 w-[calc(50%-0.5rem)] md:w-1/3 m-1 md:m-4 ${course.color}`}
-              key={idx}
-              to={"/courses/" + idx}
+                h-40 w-[calc(50%-0.5rem)] md:w-1/3 m-1 md:m-4`}
+              key={course.id}
+              style={{
+                backgroundColor: course.color,
+              }}
+              to={"/courses/" + course.id}
             >
               <div className="flex justify-between items-center">
                 <span className="uppercase text-sm">{t(course.level)} </span>
                 <span className="bg-white rounded-xl w-12 flex items-center justify-center">
-                  <span>{course.rate}</span>
+                  <span>4.8</span>
                   <i className="ri-star-fill text-yellow-400 mx-1/2"></i>
                 </span>
               </div>

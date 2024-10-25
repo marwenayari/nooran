@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link, Form, useLocation } from "@remix-run/react";
+import { Link, Form, useLocation, useNavigate } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import { useProfile } from "~/context/ProfileContext";
 
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
-  const profile = useProfile();
+  const navigate = useNavigate();
+  const profile: any = useProfile();
   const displayName = profile?.display_name || profile?.email.split("@")[0];
+  const avatar: string = profile?.avatar_url || "";
   const isGuest = !profile;
 
   const location = useLocation();
@@ -24,7 +26,12 @@ export default function SideBar() {
         <span className="cursor-pointer">
           <i className="text-2xl ri-notification-4-line"></i>{" "}
         </span>
-        <span className="cursor-pointer">
+        <span
+          onClick={() => {
+            navigate("/profile");
+          }}
+          className="cursor-pointer"
+        >
           <i className="text-2xl ri-settings-4-line"></i>
         </span>
       </div>
@@ -34,12 +41,28 @@ export default function SideBar() {
         </span>
       ) : (
         <img
-          className="rounded-full w-20 h-20 bg-red-400"
-          src="https://trello-members.s3.amazonaws.com/5b8acf1ffbad8c456f424e20/4113d92d0d92df6202eea4b541b35cca/50.png"
-          alt=""
+          className="rounded-full w-20 h-20 border-solid border-4 border-beige mb-2"
+          src={avatar}
+          alt="user avatar"
         />
       )}
-      {!isGuest && <h3 className="text-2xl">{displayName}</h3>}
+      {!isGuest && (
+        <h3 className="text-2xl flex gap-1">
+          <i
+            onClick={() => {
+              navigate("/profile");
+            }}
+            className="ri-1 ri-edit-circle-fill cursor-pointer text-zinc-700"
+          ></i>
+          {displayName}{" "}
+          <i
+            onClick={() => {
+              navigate("/plans");
+            }}
+            className="ri-1 text-amber-500 ri-vip-crown-fill cursor-pointer"
+          ></i>
+        </h3>
+      )}
       {isGuest && <h3 className="text-2xl mb-2">{t("guest")}</h3>}
       {isGuest && (
         <Link
