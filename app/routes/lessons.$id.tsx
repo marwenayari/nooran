@@ -56,7 +56,7 @@ const LessonPage = () => {
 
   return (
     <section className="w-screen h-screen flex flex-col items-center pt-10">
-      <div className="pb-3 flex gap-x-7 items-center justify-between max-w-[1140px] mx-auto w-full">
+      <div className="pb-3 flex gap-x-7 items-center justify-between max-w-[1140px] mx-auto w-full  px-10">
         <i
           onClick={() => {
             navigate(`/courses/${currentLesson.course.id}`);
@@ -120,7 +120,7 @@ const LessonPage = () => {
             </div>
           </div>
           {status === Status.question && (
-            <div className="border-t-2 w-full p-4">
+            <div className="border-t-2 w-full py-4 px-10">
               <div className="max-w-[1140px] mx-auto">
                 <button
                   disabled={currentAnswer === null}
@@ -137,7 +137,7 @@ const LessonPage = () => {
             </div>
           )}
           {status === Status.correct && (
-            <div className="bg-green-200  w-full  p-4">
+            <div className="bg-green-200  w-full py-4 px-10">
               <div className="max-w-[1140px] mx-auto flex justify-between">
                 <button
                   onClick={nextQuestion}
@@ -151,7 +151,7 @@ const LessonPage = () => {
           )}
 
           {status === Status.wrong && (
-            <div className="bg-red-200 w-full p-4">
+            <div className="bg-red-200 w-full py-4 px-10">
               <div className="max-w-[1140px] mx-auto flex justify-between">
                 <button
                   onClick={nextQuestion}
