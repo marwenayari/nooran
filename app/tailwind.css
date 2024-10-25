@@ -29,3 +29,18 @@ body {
   background-color: #f4ebe5;
   @apply dark:bg-gray-800;
 }
+
+/* Read Page */
+
+.story-bg {
+  background: url("/stories/read-bg.jpeg");
+  background-position: bottom;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.story-header,
+.story-content {
+  z-index: 1;
+}

@@ -9,7 +9,7 @@ export default function SideBar() {
   const navigate = useNavigate();
   const profile: any = useProfile();
   const displayName = profile?.display_name || profile?.email.split("@")[0];
-  const avatar: string = profile?.avatar_url || "";
+  const avatar: string = profile?.avatar_url || "/profile/default.jpg";
   const isGuest = !profile;
 
   const location = useLocation();
@@ -35,17 +35,11 @@ export default function SideBar() {
           <i className="text-2xl ri-settings-4-line"></i>
         </span>
       </div>
-      {isGuest ? (
-        <span className="flex bg-red-300 dark:bg-gray-500 rounded-full items-center justify-center w-16 h-32 mb-2">
-          <i className="text-3xl text-white font-bold ri-user-line"></i>
-        </span>
-      ) : (
-        <img
-          className="rounded-full w-20 h-20 border-solid border-4 border-beige mb-2"
-          src={avatar}
-          alt="user avatar"
-        />
-      )}
+      <img
+        className="rounded-full w-20 h-20 border-solid border-4 border-beige mb-2"
+        src={avatar}
+        alt="user avatar"
+      />
       {!isGuest && (
         <h3 className="text-2xl flex gap-1">
           <i

@@ -6,6 +6,7 @@
   "for-you": "لك!",
   "stories-by-others": "قصص من قبل الآخرين",
   "generated-story-title": "قصة مولدة",
-  "read-story": "قراءة القصة",
-  "no-stories": "ليس لديك أي قصص بعد."
+  "start-reading": "ابدأ القراءة",
+  "no-stories": "ليس لديك أي قصص بعد.",
+  "no-stories-for-you": "لا توجد قصص من قبل الآخرين لك."
 }

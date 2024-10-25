@@ -1,12 +1,10 @@
 import {
-  useActionData,
-  Form,
   useNavigate,
   useSearchParams,
   useLoaderData,
-  useNavigation,
   Link,
   ShouldRevalidateFunction,
+  useFetcher,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -76,7 +74,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request);
   const session = await getSession(request.headers.get("Cookie"));
-  const profileId = session.get("profileId");
+  const profileId = session.get("profileId") ?? -1;
 
   const { data: stories, error: userStoriesError } = await supabase
     .from("stories")
@@ -111,10 +109,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const StoriesPage = () => {
   const profile: any = useProfile();
   let { t } = useTranslation("stories");
+  const fetcher = useFetcher();
   const { stories, storiesForYou, error }: any = useLoaderData();
-  const navigation = useNavigation();
-  const loading = navigation.state !== "idle";
-  const paid = false;
+  const loading = fetcher.state === "submitting";
+  const paid = true;
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -130,8 +128,26 @@ const StoriesPage = () => {
 
   function selectStory(type: number, key: number) {
     navigate("/stories?type=" + type + "&selected=" + key);
-    // use client side navigation to /stories?type=" + type + "&selected=" + keylike if using <Link> in html
+    localStorage.setItem(
+      "selectedStory",
+      JSON.stringify({ type: type, key: key })
+    );
+    localStorage.setItem(
+      "story",
+      JSON.stringify(type == 0 ? stories[key] : forYou[key])
+    );
+    // use client side navigation to /stories?type=" + type + "&selected=" + key like if using <Link> in html
   }
+
+  const generateStory = () => {
+    if (paid) {
+      return fetcher.submit({}, { method: "post", action: "/stories" });
+    } else {
+      return () => {
+        alert("Please subscribe to generate a story");
+      };
+    }
+  };
 
   function getStory(key: number) {
     if (type === 0) {
@@ -148,14 +164,11 @@ const StoriesPage = () => {
           {t("happy-reading", { name: name })}
         </h1>
         <p className="text-slate-800 w-1/2 ">{t("achievements-celebrate")}</p>
-        <Form method="post" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <button
             className="w-40 rounded-full bg-slate-800 text-white h-10 border-2 border-amber-500"
             disabled={loading}
-            type={paid ? "submit" : "button"}
-            onClick={() => {
-              navigate("/plans");
-            }}
+            onClick={generateStory}
           >
             <span className="flex items-center justify-center">
               <svg
@@ -195,7 +208,7 @@ const StoriesPage = () => {
               </div>
             </div>
           </button> */}
-        </Form>
+        </div>
 
         <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>
         <div className="flex gap-10  overflow-x-scroll w-screen/2">
@@ -256,23 +269,29 @@ const StoriesPage = () => {
           </h2>
         </div>
         <div className="flex gap-10  overflow-x-scroll w-full">
-          {forYou.map((story: Story, idx: number) => (
-            <div
-              key={story.id}
-              onClick={() => {
-                selectStory(1, idx);
-              }}
-            >
+          {forYou.length ? (
+            forYou.map((story: Story, idx: number) => (
               <div
-                className={`cover cursor-pointer shadow-xl rounded-md h-40 w-28 ${getStoryCover(
-                  idx
-                )} text-center p-2 text-white mb-3`}
+                key={story.id}
+                onClick={() => {
+                  selectStory(1, idx);
+                }}
               >
-                <h4>{story.title}</h4>
+                <div
+                  className={`cover cursor-pointer shadow-xl rounded-md h-40 w-28 ${getStoryCover(
+                    idx
+                  )} text-center p-2 text-white mb-3`}
+                >
+                  <h4>{story.title}</h4>
+                </div>
+                <h4 className="cursor-pointer w-28">{story.title}</h4>
               </div>
-              <h4 className="cursor-pointer w-28">{story.title}</h4>
+            ))
+          ) : (
+            <div>
+              <h2>{t("no-stories-for-you")}</h2>
             </div>
-          ))}
+          )}
         </div>
 
         {/* {actionData?.story && (
@@ -298,9 +317,13 @@ const StoriesPage = () => {
                 {getStory(selected).title}
               </h2>
               <p className="text-slate-800 ">{getStory(selected).brief}</p>
-              <button className="w-40 rounded-full bg-slate-800 text-white h-10">
-                {t("read-story")}
-              </button>
+              <Link
+                to={"/read"}
+                className="flex justify-center items-center w-40 rounded-full bg-slate-800 text-white h-10"
+              >
+                {t("start-reading")}
+                <i className="text-xl font-thin mb-[-4px] ri-arrow-right-up-line"></i>
+              </Link>
             </div>
           </div>
         </section>
