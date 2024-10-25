@@ -109,11 +109,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const StoriesPage = () => {
-  const profile = useProfile();
+  const profile: any = useProfile();
   let { t } = useTranslation("stories");
   const { stories, storiesForYou, error }: any = useLoaderData();
   const navigation = useNavigation();
   const loading = navigation.state !== "idle";
+  const paid = false;
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -151,7 +152,10 @@ const StoriesPage = () => {
           <button
             className="w-40 rounded-full bg-slate-800 text-white h-10 border-2 border-amber-500"
             disabled={loading}
-            type="submit"
+            type={paid ? "submit" : "button"}
+            onClick={() => {
+              navigate("/plans");
+            }}
           >
             <span className="flex items-center justify-center">
               <svg

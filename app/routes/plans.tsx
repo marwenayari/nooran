@@ -1,7 +1,6 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { act, useState } from "react";
-import { t } from "i18next"; // Assuming t is imported for translation
+import { useNavigate } from "@remix-run/react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const bgColors = ["bg-slate-200", "bg-amber-300", "bg-zinc-600"];
@@ -117,7 +116,7 @@ const PlansPage = () => {
       <div className="pb-3 flex gap-x-7 items-center justify-end max-w-[1140px] mx-auto w-full px-10">
         <i
           onClick={() => {
-            navigate(`/courses/1`);
+            navigate(-1);
           }}
           className="text-3xl text-slate-500 hover:opacity-75 transition cursor-pointer ri-close-large-line"
         ></i>
