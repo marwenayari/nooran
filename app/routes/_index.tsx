@@ -1,8 +1,8 @@
-import {json, LoaderFunction, MetaFunction} from "@remix-run/node";
-import {Link, useLoaderData} from "@remix-run/react";
-import {useTranslation} from "react-i18next";
-import {createSupabaseServerClient} from "~/services/upabase.server";
-import {CourseSummary, toCourseSummary} from "~/models/CourseSummary";
+import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
+import { createSupabaseServerClient } from "~/services/upabase.server";
+import { CourseSummary, toCourseSummary } from "~/models/CourseSummary";
 
 export const meta: MetaFunction = () => {
   return [
@@ -34,11 +34,13 @@ const categories = [
   },
 ];
 
+export const loader: LoaderFunction = async ({ request }) => {
+  const { supabase } = createSupabaseServerClient(request);
 
-export const loader: LoaderFunction = async ({request}) => {
-  const {supabase} = createSupabaseServerClient(request);
-
-  const {data} = await supabase.from('courses').select()
+  const { data } = await supabase
+    .from("courses")
+    .select()
+    .order("created_at", { ascending: true });
 
   return json(data?.map(toCourseSummary));
 };
@@ -50,7 +52,7 @@ export default function Index() {
     selected = key;
   }
 
-  const levels = ['beginner','intermediate','advanced']
+  const levels = ["beginner", "intermediate", "advanced"];
   const courses = useLoaderData<CourseSummary[]>();
 
   return (
@@ -83,7 +85,7 @@ export default function Index() {
                 h-40 w-[calc(50%-0.5rem)] md:w-1/3 m-1 md:m-4`}
               key={course.id}
               style={{
-                backgroundColor: course.color
+                backgroundColor: course.color,
               }}
               to={"/courses/" + course.id}
             >

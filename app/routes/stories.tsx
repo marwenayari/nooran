@@ -36,7 +36,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const words = ["مزرعة", "دجاج", "ابقار", "خرفان", "حيوانات", "فلاحة"];
+  const words = ["عمل", "اتقان", "تحدي", "فرح", "تعلم", "سعادة", "تعاون"];
   const age = 12;
 
   const session = await getSession(request.headers.get("Cookie"));
@@ -161,7 +161,7 @@ const StoriesPage = () => {
         <h2 className="text-3xl text-slate-800">{t("latest-stories")}</h2>
         <div className="flex gap-10  overflow-x-scroll w-screen/2">
           {loading ? (
-            <div className="h-40 w-28 ">
+            <div className="h-40 w-28 min-w-28">
               <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto mb-3 h-40">
                 <div className="animate-pulse flex space-x-4">
                   <div className="flex-1 space-y-6 py-1">
@@ -248,7 +248,7 @@ const StoriesPage = () => {
         <section className="w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16">
           <div className="flex gap-4">
             <div
-              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer rounded-md shadow-xl h-40 w-28 ${getStoryCover(
+              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer rounded-md shadow-xl min-w-28 h-40 w-28 ${getStoryCover(
                 selected
               )} text-center p-2 text-white`}
             >
