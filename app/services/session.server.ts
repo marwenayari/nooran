@@ -5,7 +5,7 @@ if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set");
 }
 
-export let { getSession, commitSession, destroySession } =
+export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
       name: "user_session",

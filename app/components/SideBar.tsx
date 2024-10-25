@@ -7,9 +7,9 @@ import { useProfile } from "~/context/ProfileContext";
 export default function SideBar() {
   let { t } = useTranslation("sidebar");
   const navigate = useNavigate();
-
-  const profile = useProfile();
+  const profile: any = useProfile();
   const displayName = profile?.display_name || profile?.email.split("@")[0];
+  const avatar: string = profile?.avatar_url || "";
   const isGuest = !profile;
 
   const location = useLocation();
@@ -41,9 +41,9 @@ export default function SideBar() {
         </span>
       ) : (
         <img
-          className="rounded-full w-20 h-20 bg-red-400"
-          src="https://trello-members.s3.amazonaws.com/5b8acf1ffbad8c456f424e20/4113d92d0d92df6202eea4b541b35cca/50.png"
-          alt=""
+          className="rounded-full w-20 h-20 border-solid border-4 border-beige mb-2"
+          src={avatar}
+          alt="user avatar"
         />
       )}
       {!isGuest && (
