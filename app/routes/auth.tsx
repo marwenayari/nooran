@@ -1,10 +1,9 @@
-import { json, redirect } from "@remix-run/node";
-import { getSession, commitSession } from "~/services/session.server";
-import { Form, useActionData } from "@remix-run/react";
-import { createSupabaseServerClient } from "~/services/upabase.server";
-
-import type { LoaderFunction } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
+import type {LoaderFunction} from "@remix-run/node";
+import {json, redirect} from "@remix-run/node";
+import {commitSession, getSession} from "~/services/session.server";
+import {Form, useActionData} from "@remix-run/react";
+import {createSupabaseServerClient} from "~/services/upabase.server";
+import {useTranslation} from "react-i18next";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
 
 type ActionData = {
@@ -28,7 +27,7 @@ export const action = async ({ request }) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const { supabase, headers } = createSupabaseServerClient(request);
+  const {supabase} = createSupabaseServerClient(request);
 
   // First, try to sign in the user
   const { data: signInData, error: signInError } =
@@ -52,6 +51,7 @@ export const action = async ({ request }) => {
 
       const session = await getSession(request.headers.get("Cookie"));
       session.set("user", signUpData.user);
+
       return redirect("/", {
         headers: { "Set-Cookie": await commitSession(session) },
       });
@@ -69,7 +69,7 @@ export const action = async ({ request }) => {
 };
 
 export default function Auth() {
-  let { t } = useTranslation("auth");
+  const {t} = useTranslation("auth");
   const actionData: ActionData | undefined = useActionData();
 
   return (

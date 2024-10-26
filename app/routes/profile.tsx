@@ -1,10 +1,10 @@
 import {Form, json} from "@remix-run/react";
 import {useTranslation} from "react-i18next";
 import {useProfile} from "~/context/ProfileContext";
-import {Profile} from "~/types";
 import type {ActionFunctionArgs} from "@remix-run/node";
 import {createSupabaseServerClient} from "~/services/upabase.server";
 import {getSession} from "~/services/session.server";
+import {Profile} from "~/models/Profile";
 
 export async function action({request}: ActionFunctionArgs) {
   const {supabase} = createSupabaseServerClient(request);
@@ -21,9 +21,9 @@ export async function action({request}: ActionFunctionArgs) {
 }
 
 const ProfilePage = () => {
-  let { t } = useTranslation("profile");
+  const { t } = useTranslation("profile");
   const profile: Profile | null = useProfile();
-  const name = profile?.display_name || "";
+  const name = profile?.displayName || "";
 
   return (
     <div className="profile-settings">

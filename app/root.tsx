@@ -21,6 +21,7 @@ import SideMenu from "./components/SideMenu";
 import { ShouldRevalidateFunction, useLocation } from "react-router-dom";
 import { createSupabaseServerClient } from "./services/upabase.server";
 import ProfileContext from "./context/ProfileContext";
+import {Profile, toProfile} from "~/models/Profile";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -60,11 +61,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     session.set("profileId", profile?.id);
   }
 
-  let storedLanguage =
+  const storedLanguage =
     typeof window !== "undefined" ? localStorage.getItem("language") : null;
-  let locale = storedLanguage || (await i18next.getLocale(request));
+  const locale = storedLanguage || (await i18next.getLocale(request));
+  console.log('locale', locale)
   return json(
-    { locale, profile, user },
+    { locale: locale || 'en', profile: toProfile(profile), user },
     {
       headers: {
         "Set-Cookie": await commitSession(session),
@@ -73,16 +75,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   );
 };
 
-export let handle = {
+export const handle = {
   i18n: "common",
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const loaderData = useLoaderData();
+  const { locale, profile } = useLoaderData<{
+    profile: Profile,
+    locale: string,
+    user: any
+  }>();
 
-  const { locale, profile } = loaderData ?? { locale: "en" };
+  // const { locale, profile } = loaderData;
 
-  let { i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   useChangeLanguage(locale);
 

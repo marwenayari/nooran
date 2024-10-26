@@ -11,13 +11,13 @@ export type Story = {
   uder_id: number;
 };
 
-export type Profile = {
-  id: number;
-  display_name: string;
-  bio: string;
-  avatar: string;
-  user_id: number;
-};
+// export type Profile = {
+//   id: number;
+//   display_name: string;
+//   bio: string;
+//   avatar: string;
+//   user_id: number;
+// };
 
 export type User = {
   id: number;

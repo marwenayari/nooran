@@ -3,13 +3,14 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { Link, Form, useLocation, useNavigate } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import { useProfile } from "~/context/ProfileContext";
+import {Profile} from "~/models/Profile";
 
 export default function SideBar() {
-  let { t } = useTranslation("sidebar");
+  const { t } = useTranslation("sidebar");
   const navigate = useNavigate();
-  const profile: any = useProfile();
-  const displayName = profile?.display_name || profile?.email.split("@")[0];
-  const avatar: string = profile?.avatar_url || "/profile/default.jpg";
+  const profile: Profile | null = useProfile();
+  const displayName = profile?.displayName || profile?.email.split("@")[0];
+  const avatar: string = profile?.avatarUrl || "/profile/default.jpg";
   const isGuest = !profile;
 
   const location = useLocation();
