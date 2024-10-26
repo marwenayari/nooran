@@ -22,7 +22,7 @@ export default function ImageAndAudioWithOptionsChallenge({challenge, opOptionCl
                                 ></i>
                         </button>
 
-                        <img className="rounded-xl aspect-square max-h-[270px] border-2" width="100%"
+                        <img className="rounded-xl max-h-[270px] border-2" width="100%"
                              src={challenge.imageSource} alt=""/>
                 </div>
                 <div className="flex flex-col my-4">

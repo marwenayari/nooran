@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "~/services/upabase.server";
 import { LessonDetails, toLessonDetails } from "~/models/LessonDetails";
 import {ChallengeType} from "~/models/ChallengeType";
 import ImageAndAudioWithOptionsChallenge from "~/components/ImageAndAudioWithOptionsChallenge";
+import AudioWithOptionsChallenge from "~/components/AudioWithOptionsChallenge";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request);
@@ -84,7 +85,11 @@ const LessonPage = () => {
                                         <ImageAndAudioWithOptionsChallenge currentOptionId={currentAnswer} challenge={currentChallenge} opOptionClick={(option) => setCurrentAnswer(option.id)}/>
                                     )
                                 }
-
+                                {
+                                    currentChallenge.type === ChallengeType.audioWithOptions && (
+                                        <AudioWithOptionsChallenge currentOptionId={currentAnswer} challenge={currentChallenge} opOptionClick={(option) => setCurrentAnswer(option.id)}/>
+                                    )
+                                }
                             </div>
 
                         </div>
