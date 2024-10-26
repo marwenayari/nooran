@@ -59,8 +59,14 @@ const LessonPage = () => {
     return (
         <section className="w-screen h-screen flex flex-col items-center pt-10">
             <div
-                className="pb-3 flex gap-x-7 items-center justify-between max-w-[1140px] mx-auto w-full">
-                <i onClick={() => {navigate(`/courses/${currentLesson.course.id}`)}} className="text-3xl text-slate-500 hover:opacity-75 transition cursor-pointer ri-close-large-line"></i>
+                className="pb-3 px-4 flex gap-x-7 items-center justify-between max-w-[1140px] mx-auto w-full">
+                <button className="text-3xl text-slate-500 hover:opacity-75 transition cursor-pointer" onClick={() => {
+                    navigate(`/courses/${currentLesson.course.id}`)
+                }}>
+                    <i className="ri-close-large-line"
+                       ></i>
+
+                </button>
                 <div className="w-full bg-gray-200 rounded-full h-3.5  dark:bg-gray-700">
                     <div className="bg-green-400 h-3.5 rounded-full" style={{width: "45%"}}></div>
                 </div>
@@ -71,7 +77,7 @@ const LessonPage = () => {
             {
                 currentLesson.challenges.length > 0 && (
                     <>
-                        <div className="py-8 w-full flex flex-grow max-w-[768px] mx-auto items-center">
+                        <div className="py-8 px-4 w-full flex flex-grow max-w-[768px] mx-auto items-center">
                             <div className="block w-full">
                                 {
                                     currentChallenge.type === ChallengeType.imageAndAudioWithOptions && (

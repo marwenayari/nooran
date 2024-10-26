@@ -52,7 +52,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const storedLanguage =
     typeof window !== "undefined" ? localStorage.getItem("language") : null;
   const locale = storedLanguage || (await i18next.getLocale(request));
-  console.log('locale', locale)
   return json(
       {locale: locale || 'en', userProfile: toProfile(profile), user},
     {
@@ -73,10 +72,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     locale: string,
     user: any
   }>();
-  useEffect(() => {
-    console.log('user profile', userProfile)
-
-  }, [userProfile]);
 
   const { i18n } = useTranslation();
 

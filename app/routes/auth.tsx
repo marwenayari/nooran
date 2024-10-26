@@ -40,7 +40,6 @@ export const action = async ({ request }) => {
       profile = data;
       session.set("profileId", profile?.id);
     }
-    console.log('getProfile', toProfile(data))
     return toProfile(data)
   }
 
@@ -104,7 +103,6 @@ export default function Auth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('actionData', actionData)
     if(actionData && actionData.profile?.id) {
       updateProfile(actionData.profile)
       navigate('/')
