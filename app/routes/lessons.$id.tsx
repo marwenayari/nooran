@@ -1,11 +1,12 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { useState } from "react";
-import { createSupabaseServerClient } from "~/services/upabase.server";
-import { LessonDetails, toLessonDetails } from "~/models/LessonDetails";
+import {json, LoaderFunctionArgs} from "@remix-run/node";
+import {useLoaderData, useNavigate} from "@remix-run/react";
+import {useState} from "react";
+import {createSupabaseServerClient} from "~/services/upabase.server";
+import {LessonDetails, toLessonDetails} from "~/models/LessonDetails";
 import {ChallengeType} from "~/models/ChallengeType";
 import ImageAndAudioWithOptionsChallenge from "~/components/ImageAndAudioWithOptionsChallenge";
 import AudioWithOptionsChallenge from "~/components/AudioWithOptionsChallenge";
+import {useTranslation} from "react-i18next";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request);
@@ -19,6 +20,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return json(toLessonDetails(data));
 };
 
+export const handle = {
+  i18n: "lessons",
+};
+
 enum Status {
   question = "QUESTION",
   correct = "CORRECT",
@@ -27,6 +32,8 @@ enum Status {
 
 const LessonPage = () => {
   const navigate = useNavigate();
+    const {t} = useTranslation("lessons")
+
   const currentLesson = useLoaderData<LessonDetails>();
   // const questions = useLoaderData<typeof loader>();
   const [currentChallenge, setCurrentChallenge] = useState(
@@ -95,12 +102,12 @@ const LessonPage = () => {
                         </div>
                         {status === Status.question && (
                             <div className="border-t-2 w-full p-4">
-                                <div className="max-w-[1140px] mx-auto">
+                                <div className="max-w-[1140px] mx-auto flex w-full flex-row-reverse">
                                     <button
                                         disabled={currentAnswer === null}
                                         onClick={answer}
                                         className={`inline-block py-4 px-8 font-bold rounded-md text-center my-2 cursor-pointer ${currentAnswer === null ? 'bg-gray-200 text-gray-600' : 'text-white bg-green-400'}`}>
-                                        أجب
+                                        {t('check')}
                                     </button>
                                 </div>
 
@@ -110,12 +117,13 @@ const LessonPage = () => {
                         {status === Status.correct && (
                             <div className="bg-green-200  w-full  p-4">
                                 <div className="max-w-[1140px] mx-auto flex justify-between">
+                                    <i className="ri-check-line w-16 h-16 items-center justify-center text-4xl rounded-full font-bold flex bg-white text-green-900"></i>
+
                                     <button
                                         onClick={nextQuestion}
                                         className={`py-4 px-8 font-bold rounded-md text-center my-2 cursor-pointer bg-green-600 text-white`}>
-                                        أكمل
+                                        {t('continue')}
                                     </button>
-                                    <i className="ri-check-line w-16 h-16 items-center justify-center text-4xl rounded-full font-bold flex bg-white text-green-900"></i>
 
                                 </div>
 
@@ -123,23 +131,24 @@ const LessonPage = () => {
                         )
                         }
 
-          {status === Status.wrong && (
-            <div className="bg-red-200 w-full py-4 px-10">
-              <div className="max-w-[1140px] mx-auto flex justify-between">
-                <button
-                  onClick={nextQuestion}
-                  className={`py-4 px-8 font-bold rounded-md text-center my-2 cursor-pointer bg-red-600 text-white`}
-                >
-                  أكمل
-                </button>
-                <i className="ri-close-line w-16 h-16 items-center justify-center text-4xl rounded-full font-bold flex bg-white text-red-900"></i>
-              </div>
+                        {status === Status.wrong && (
+                            <div className="bg-red-200 w-full py-4 px-10">
+                <div className="max-w-[1140px] mx-auto flex justify-between">
+                    <i className="ri-close-line w-16 h-16 items-center justify-center text-4xl rounded-full font-bold flex bg-white text-red-900"></i>
+
+                    <button
+                        onClick={nextQuestion}
+                        className={`py-4 px-8 font-bold rounded-md text-center my-2 cursor-pointer bg-red-600 text-white`}
+                    >
+                        {t('continue')}
+                    </button>
+                </div>
             </div>
           )}
-        </>
-      )}
-    </section>
-  );
+                    </>
+                )}
+        </section>
+    );
 };
 
 export default LessonPage;

@@ -5,14 +5,14 @@ import {commitSession, getSession} from "./services/session.server";
 import "remixicon/fonts/remixicon.css";
 import "./tailwind.css";
 import {useChangeLanguage} from "remix-i18next/react";
-import i18next from "~/i18n/i18next.server";
-import {useTranslation} from "react-i18next";
+import {useSSR, useTranslation} from "react-i18next";
 import SideBar from "./components/SideBar";
 import SideMenu from "./components/SideMenu";
 import {ShouldRevalidateFunction, useLocation} from "react-router-dom";
 import {createSupabaseServerClient} from "./services/upabase.server";
 import {ProfileProvider} from "./context/ProfileContext";
 import {Profile, toProfile} from "~/models/Profile";
+import i18next from "~/i18n/i18next.server";
 import {useEffect} from "react";
 
 export const links: LinksFunction = () => [
@@ -44,8 +44,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .eq("user_id", user?.id ?? "")
     .single();
 
+  profile = toProfile(data);
+  console.log('profile.locale', profile.locale)
+
   if (!error) {
-    profile = data;
     session.set("profileId", profile?.id);
   }
 
@@ -53,7 +55,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     typeof window !== "undefined" ? localStorage.getItem("language") : null;
   const locale = storedLanguage || (await i18next.getLocale(request));
   return json(
-      {locale: locale || 'en', userProfile: toProfile(profile), user},
+      {userProfile: profile, user, locale},
     {
       headers: {
         "Set-Cookie": await commitSession(session),
@@ -62,12 +64,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   );
 };
 
-export const handle = {
-  i18n: "common",
-};
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const {locale, userProfile} = useLoaderData<{
+// export const handle = {
+//   i18n: "common",
+// };
+export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const {userProfile, locale} = useLoaderData<{
     userProfile: Profile,
     locale: string,
     user: any
@@ -77,6 +79,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   useChangeLanguage(locale);
 
+  // On component mount, check if a language is saved in localStorage
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language");
+    if (savedLanguage && savedLanguage !== i18n.language) {
+      i18n.changeLanguage(savedLanguage);
+    }
+  }, [i18n]);
+
   const location = useLocation();
   const isAuthPage = location.pathname === "/auth";
   const fullScreenPaths = ["/lessons", "/plans", "/read"];
@@ -85,7 +95,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+      <html lang={locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

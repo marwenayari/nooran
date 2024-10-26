@@ -1,9 +1,7 @@
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link, Form, useLocation, useNavigate } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
-import { useProfile } from "~/context/ProfileContext";
-import {Profile} from "~/models/Profile";
+import {Form, Link, useLocation, useNavigate} from "@remix-run/react";
+import {useProfile} from "~/context/ProfileContext";
 
 export default function SideBar() {
   const { t } = useTranslation("sidebar");

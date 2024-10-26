@@ -14,14 +14,6 @@ export default function LanguageSwitcher() {
     fetcher.submit({ lang }, { method: "patch", action: "/profile" });
   };
 
-  // On component mount, check if a language is saved in localStorage
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("language");
-    if (savedLanguage && savedLanguage !== i18n.language) {
-      i18n.changeLanguage(savedLanguage);
-    }
-  }, [i18n]);
-
   useEffect(() => {
     if (profile && profile?.locale) {
       i18n.changeLanguage(profile?.locale);
