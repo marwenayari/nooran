@@ -1,10 +1,10 @@
 import {
-  useNavigate,
-  useSearchParams,
-  useLoaderData,
   Link,
   ShouldRevalidateFunction,
   useFetcher,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
 } from "@remix-run/react";
 import {useTranslation} from "react-i18next";
 import {ActionFunction, json, LoaderFunctionArgs, redirect,} from "@remix-run/node";
@@ -12,10 +12,9 @@ import {loadStory} from "~/services/watsonx.server";
 import {createSupabaseServerClient} from "~/services/upabase.server";
 import {arraysHaveCommonElements} from "~/utils/keywordsSimilarity";
 import {getSession} from "~/services/session.server";
-import ProfileContext, {useProfile} from "~/context/ProfileContext";
+import {useProfile} from "~/context/ProfileContext";
 import {Story} from "~/types";
 import {getStoryCover} from "~/utils/colors";
-import {Profile} from "~/models/Profile";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
@@ -103,7 +102,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const StoriesPage = () => {
-  const profile: Profile | null = useProfile();
+  const {profile} = useProfile();
   const { t } = useTranslation("stories");
   const fetcher = useFetcher();
   const { stories, storiesForYou, error }: any = useLoaderData();

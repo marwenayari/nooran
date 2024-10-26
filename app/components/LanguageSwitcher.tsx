@@ -6,7 +6,7 @@ import { useProfile } from "~/context/ProfileContext";
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const fetcher = useFetcher();
-  const profile = useProfile();
+  const {profile} = useProfile();
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);

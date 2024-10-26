@@ -1,27 +1,19 @@
-import {
-  json,
-  Links,
-  Meta,
-  Outlet,
-  redirect,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { commitSession, getSession } from "./services/session.server";
+import {json, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData,} from "@remix-run/react";
+import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
+import {commitSession, getSession} from "./services/session.server";
 
 import "remixicon/fonts/remixicon.css";
 import "./tailwind.css";
-import { useChangeLanguage } from "remix-i18next/react";
+import {useChangeLanguage} from "remix-i18next/react";
 import i18next from "~/i18n/i18next.server";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import SideBar from "./components/SideBar";
 import SideMenu from "./components/SideMenu";
-import { ShouldRevalidateFunction, useLocation } from "react-router-dom";
-import { createSupabaseServerClient } from "./services/upabase.server";
-import ProfileContext from "./context/ProfileContext";
+import {ShouldRevalidateFunction, useLocation} from "react-router-dom";
+import {createSupabaseServerClient} from "./services/upabase.server";
+import {ProfileProvider} from "./context/ProfileContext";
 import {Profile, toProfile} from "~/models/Profile";
+import {useEffect} from "react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,10 +36,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const { supabase } = createSupabaseServerClient(request);
   const user = session.get("user");
-  const isSignInPage = new URL(request.url).pathname === "/auth";
-  if (user && isSignInPage) {
-    return redirect("/");
-  }
 
   let profile = null;
   const { data, error } = await supabase
@@ -66,7 +54,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const locale = storedLanguage || (await i18next.getLocale(request));
   console.log('locale', locale)
   return json(
-    { locale: locale || 'en', profile: toProfile(profile), user },
+      {locale: locale || 'en', userProfile: toProfile(profile), user},
     {
       headers: {
         "Set-Cookie": await commitSession(session),
@@ -80,13 +68,15 @@ export const handle = {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { locale, profile } = useLoaderData<{
-    profile: Profile,
+  const {locale, userProfile} = useLoaderData<{
+    userProfile: Profile,
     locale: string,
     user: any
   }>();
+  useEffect(() => {
+    console.log('user profile', userProfile)
 
-  // const { locale, profile } = loaderData;
+  }, [userProfile]);
 
   const { i18n } = useTranslation();
 
@@ -109,13 +99,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {isAuthPage ? (
-          <main className="flex items-center justify-center h-screen">
-            {children}
-          </main>
+            <ProfileProvider userProfile={userProfile}>
+              <main className="flex items-center justify-center h-screen">
+                {children}
+              </main>
+            </ProfileProvider>
+
         ) : (
-          <ProfileContext.Provider value={profile}>
-            {isFullScreen && (
-              <section className="h-full w-full">{children}</section>
+            <ProfileProvider userProfile={userProfile}>
+              {isFullScreen && (
+                  <section className="h-full w-full">{children}</section>
             )}
             {!isFullScreen && (
               <section
@@ -130,7 +123,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <SideBar />
               </section>
             )}
-          </ProfileContext.Provider>
+            </ProfileProvider>
         )}
         <ScrollRestoration />
         <Scripts />

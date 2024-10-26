@@ -8,7 +8,7 @@ import {Profile} from "~/models/Profile";
 export default function SideBar() {
   const { t } = useTranslation("sidebar");
   const navigate = useNavigate();
-  const profile: Profile | null = useProfile();
+  const {profile}= useProfile();
   const displayName = profile?.displayName || profile?.email.split("@")[0];
   const avatar: string = profile?.avatarUrl || "/profile/default.jpg";
   const isGuest = !profile;

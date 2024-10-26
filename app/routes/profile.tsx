@@ -22,7 +22,7 @@ export async function action({request}: ActionFunctionArgs) {
 
 const ProfilePage = () => {
   const { t } = useTranslation("profile");
-  const profile: Profile | null = useProfile();
+  const {profile} = useProfile();
   const name = profile?.displayName || "";
 
   return (
