@@ -29,7 +29,8 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const words = ["عمل", "اتقان", "تحدي", "فرح", "تعلم", "سعادة", "تعاون"];
+  // const words = ["عمل", "اتقان", "تحدي", "فرح", "تعلم", "سعادة", "تعاون"];
+  const words = ["حب", "سلام", "حرية", "عدالة", "تسامح", "احترام"];
   const age = 12;
 
   const session = await getSession(request.headers.get("Cookie"));
