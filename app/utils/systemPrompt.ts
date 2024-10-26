@@ -28,14 +28,14 @@ export const systemPrompt = `
 
 **المخرج المتوقع:**
 {
-  title: "العنوان",
-  title_en: "Title in English",
-  brief: "نبذة قصيرة عن القصة",
-  brief_en: "Brief in English",
-  content: ["جملة أولى", "جملة ثانية", ...],
-  content_en: ["First sentence", "Second sentence", ...],
-  min_age: الحد الأدنى للعمر,
-  max_age: الحد الأقصى للعمر
+  "title": "title in Arabic",
+  "title_en": "Title in English",
+  "brief": "Brief in Arabic",
+  "brief_en": "Brief in English",
+  "content": ["first sentence in Arabic", "second sentence in Arabic", ...],
+  "content_en": ["First sentence in English", "Second sentence in English", ...],
+  "min_age": minimum age,
+  "max_age": maximum age
 }
 
 مثال للمدخل:
@@ -50,14 +50,14 @@ export const systemPrompt = `
 
 المخرج:
 {
-  title: "الدجاجة الذهبية",
-  title_en: "The Golden Chicken Story",
-  brief: "قصة عن مزارع وزوجته يملكان دجاجة ذهبية تضع بيضات ذهبية",
-  brief_en: "A story about a farmer and his wife who own a golden chicken that lays golden eggs",
-  content: ["يُحكى أنّ مزارعاً وزوجته..."],
-  content_en: ["It is said that a farmer and his wife..."],
-  min_age: 8,
-  max_age: 12
+  "title": "الدجاجة الذهبية",
+  "title_en": "The Golden Chicken Story",
+  "brief": "قصة عن مزارع وزوجته يملكان دجاجة ذهبية تضع بيضات ذهبية",
+  "brief_en": "A story about a farmer and his wife who own a golden chicken that lays golden eggs",
+  "content": ["يُحكى أنّ مزارعاً وزوجته..."],
+  "content_en": ["It is said that a farmer and his wife..."],
+  "min_age": 8,
+  "max_age": 12
 }
 
 إذا كانت القصة على أكثر من سطر، ضع كل فقرة في مصفوفة، كما في المثال.
@@ -65,13 +65,13 @@ export const systemPrompt = `
 IMPORTANT: Keep the output result in the same format as the expected output bellow
 
 {
-  title: "العنوان",
-  title_en: "Title in English",
-  brief: "نبذة قصيرة عن القصة",
-  brief_en: "Brief in English",
-  content: ["جملة أولى", "جملة ثانية", ...],
-  content_en: ["First sentence", "Second sentence", ...],
-  min_age: الحد الأدنى للعمر,
-  max_age: الحد الأقصى للعمر
+  "title": "title in Arabic",
+  "title_en": "Title in English",
+  "brief": "Brief in Arabic",
+  "brief_en": "Brief in English",
+  "content": ["first sentence in Arabic", "second sentence in Arabic", ...],
+  "content_en": ["First sentence in English", "Second sentence in English", ...],
+  "min_age": minimum age,
+  "max_age": maximum age
 }
 `;

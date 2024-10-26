@@ -5,6 +5,7 @@
   "latest-stories": "Your Latest Stories",
   "for-you": "For You!",
   "stories-by-others": "Stories By Others",
-  "read-story": "Read Story",
-  "no-stories": "You don't have any stories yet."
+  "start-reading": "Start Reading",
+  "no-stories": "You don't have any stories yet.",
+  "no-stories-for-you": "No stories by others for you."
 }

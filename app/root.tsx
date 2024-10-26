@@ -88,7 +88,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const location = useLocation();
   const isAuthPage = location.pathname === "/auth";
-  const fullScreenPaths = ["/lessons", "/plans"];
+  const fullScreenPaths = ["/lessons", "/plans", "/read"];
   const isFullScreen = fullScreenPaths.some((value) =>
     location.pathname.startsWith(value)
   );
