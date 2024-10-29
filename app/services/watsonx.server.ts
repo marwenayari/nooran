@@ -31,7 +31,7 @@ export const loadStory = async (words: string[], age: number) => {
 
   const params = {
     input: `<<SYS>>${systemPrompt}<<SYS>>[INST]${inputText}[/INST]`,
-    modelId: "sdaia/allam-1-13b-instruct",
+    modelId: process.env.WATSONX_MODEL_ID ?? "sdaia/allam-1-13b-instruct",
     projectId: process.env.WATSONX_PROJECT_ID,
     parameters: textGenRequestParametersModel,
   };
