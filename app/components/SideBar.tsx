@@ -1,15 +1,14 @@
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link, Form, useLocation, useNavigate } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
-import { useProfile } from "~/context/ProfileContext";
+import {Form, Link, useLocation, useNavigate} from "@remix-run/react";
+import {useProfile} from "~/context/ProfileContext";
 
 export default function SideBar() {
-  let { t } = useTranslation("sidebar");
+  const { t } = useTranslation("sidebar");
   const navigate = useNavigate();
-  const profile: any = useProfile();
-  const displayName = profile?.display_name || profile?.email.split("@")[0];
-  const avatar: string = profile?.avatar_url || "/profile/default.jpg";
+  const {profile}= useProfile();
+  const displayName = profile?.displayName || profile?.email.split("@")[0];
+  const avatar: string = profile?.avatarUrl || "/profile/default.jpg";
   const isGuest = !profile;
 
   const location = useLocation();

@@ -1,26 +1,19 @@
-import {
-  json,
-  Links,
-  Meta,
-  Outlet,
-  redirect,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { commitSession, getSession } from "./services/session.server";
+import {json, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData,} from "@remix-run/react";
+import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
+import {commitSession, getSession} from "./services/session.server";
 
 import "remixicon/fonts/remixicon.css";
 import "./tailwind.css";
-import { useChangeLanguage } from "remix-i18next/react";
-import i18next from "~/i18n/i18next.server";
-import { useTranslation } from "react-i18next";
+import {useChangeLanguage} from "remix-i18next/react";
+import {useSSR, useTranslation} from "react-i18next";
 import SideBar from "./components/SideBar";
 import SideMenu from "./components/SideMenu";
-import { ShouldRevalidateFunction, useLocation } from "react-router-dom";
-import { createSupabaseServerClient } from "./services/upabase.server";
-import ProfileContext from "./context/ProfileContext";
+import {ShouldRevalidateFunction, useLocation} from "react-router-dom";
+import {createSupabaseServerClient} from "./services/upabase.server";
+import {ProfileProvider} from "./context/ProfileContext";
+import {Profile, toProfile} from "~/models/Profile";
+import i18next from "~/i18n/i18next.server";
+import {useEffect} from "react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,10 +36,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const { supabase } = createSupabaseServerClient(request);
   const user = session.get("user");
-  const isSignInPage = new URL(request.url).pathname === "/auth";
-  if (user && isSignInPage) {
-    return redirect("/");
-  }
 
   let profile = null;
   const { data, error } = await supabase
@@ -55,16 +44,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .eq("user_id", user?.id ?? "")
     .single();
 
+  profile = toProfile(data);
+  console.log('profile.locale', profile.locale)
+
   if (!error) {
-    profile = data;
     session.set("profileId", profile?.id);
   }
 
-  let storedLanguage =
+  const storedLanguage =
     typeof window !== "undefined" ? localStorage.getItem("language") : null;
-  let locale = storedLanguage || (await i18next.getLocale(request));
+  const locale = storedLanguage || (await i18next.getLocale(request));
   return json(
-    { locale, profile, user },
+      {userProfile: profile, user, locale},
     {
       headers: {
         "Set-Cookie": await commitSession(session),
@@ -73,18 +64,28 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   );
 };
 
-export let handle = {
-  i18n: "common",
-};
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const loaderData = useLoaderData();
+// export const handle = {
+//   i18n: "common",
+// };
+export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const {userProfile, locale} = useLoaderData<{
+    userProfile: Profile,
+    locale: string,
+    user: any
+  }>();
 
-  const { locale, profile } = loaderData ?? { locale: "en" };
-
-  let { i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   useChangeLanguage(locale);
+
+  // On component mount, check if a language is saved in localStorage
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language");
+    if (savedLanguage && savedLanguage !== i18n.language) {
+      i18n.changeLanguage(savedLanguage);
+    }
+  }, [i18n]);
 
   const location = useLocation();
   const isAuthPage = location.pathname === "/auth";
@@ -94,7 +95,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+      <html lang={locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -103,13 +104,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {isAuthPage ? (
-          <main className="flex items-center justify-center h-screen">
-            {children}
-          </main>
+            <ProfileProvider userProfile={userProfile}>
+              <main className="flex items-center justify-center h-screen">
+                {children}
+              </main>
+            </ProfileProvider>
+
         ) : (
-          <ProfileContext.Provider value={profile}>
-            {isFullScreen && (
-              <section className="h-full w-full">{children}</section>
+            <ProfileProvider userProfile={userProfile}>
+              {isFullScreen && (
+                  <section className="h-full w-full">{children}</section>
             )}
             {!isFullScreen && (
               <section
@@ -124,7 +128,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <SideBar />
               </section>
             )}
-          </ProfileContext.Provider>
+            </ProfileProvider>
         )}
         <ScrollRestoration />
         <Scripts />

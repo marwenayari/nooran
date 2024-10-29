@@ -46,7 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  let { t } = useTranslation("home");
+  const { t } = useTranslation("home");
   let selected = 0;
   function selectCategory(key: number) {
     selected = key;

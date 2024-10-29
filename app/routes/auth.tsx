@@ -1,15 +1,18 @@
-import { json, redirect } from "@remix-run/node";
-import { getSession, commitSession } from "~/services/session.server";
-import { Form, useActionData } from "@remix-run/react";
-import { createSupabaseServerClient } from "~/services/upabase.server";
-
-import type { LoaderFunction } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
+import type {LoaderFunction} from "@remix-run/node";
+import {json, redirect} from "@remix-run/node";
+import {commitSession, getSession} from "~/services/session.server";
+import {Form, useActionData, useNavigate} from "@remix-run/react";
+import {createSupabaseServerClient} from "~/services/upabase.server";
+import {useTranslation} from "react-i18next";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
+import {Profile, toProfile} from "~/models/Profile";
+import {useProfile} from "~/context/ProfileContext";
+import {useEffect} from "react";
 
 type ActionData = {
   success?: boolean;
   error?: string;
+  profile: Profile | null
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -24,11 +27,27 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {
+
+  const getProfile = async (userId: string): Promise<Profile> => {
+    let profile = null;
+    const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .single();
+
+    if (!error) {
+      profile = data;
+      session.set("profileId", profile?.id);
+    }
+    return toProfile(data)
+  }
+
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const { supabase, headers } = createSupabaseServerClient(request);
+  const {supabase} = createSupabaseServerClient(request);
 
   // First, try to sign in the user
   const { data: signInData, error: signInError } =
@@ -52,25 +71,43 @@ export const action = async ({ request }) => {
 
       const session = await getSession(request.headers.get("Cookie"));
       session.set("user", signUpData.user);
-      return redirect("/", {
+
+      return json({
+        success: true,
+        error: "",
+        profile: await getProfile(signUpData.user?.id ?? '')
+      }, {
         headers: { "Set-Cookie": await commitSession(session) },
       });
     } else {
-      return json({ success: false, error: signInError.message });
+      return json({ success: false, error: signInError.message, profile: null });
     }
   }
 
   const session = await getSession(request.headers.get("Cookie"));
   session.set("user", signInData.user);
 
-  return redirect("/", {
+  return json({
+    success: true,
+    error: "",
+    profile: await getProfile(signInData.user?.id ?? '')
+  }, {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 };
 
 export default function Auth() {
-  let { t } = useTranslation("auth");
+  const {t} = useTranslation("auth");
   const actionData: ActionData | undefined = useActionData();
+  const {updateProfile} = useProfile()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(actionData && actionData.profile?.id) {
+      updateProfile(actionData.profile)
+      navigate('/')
+    }
+  }, [actionData]);
 
   return (
     <main className="flex items-center justify-center h-screen w-screen bg-cloud bg-cover">

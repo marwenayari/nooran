@@ -6,7 +6,9 @@ export interface Challenge {
     type: string,
     imageSource: string,
     audio: string,
-    options: ChallengeOption[]
+    options: ChallengeOption[],
+    order: number,
+    completed: boolean
 }
 
 export function toChallenge(json: any): Challenge {
@@ -16,6 +18,8 @@ export function toChallenge(json: any): Challenge {
         type: json?.type || 'text',
         imageSource: json?.image_source,
         audio: json?.audio,
-        options: json?.challenge_options?.map(toChallengeOption)
+        options: json?.challenge_options?.map(toChallengeOption),
+        order: json?.order,
+        completed: false
     }
 }

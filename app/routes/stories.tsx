@@ -1,25 +1,20 @@
 import {
-  useNavigate,
-  useSearchParams,
-  useLoaderData,
   Link,
   ShouldRevalidateFunction,
   useFetcher,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
 } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
-import {
-  json,
-  ActionFunction,
-  LoaderFunctionArgs,
-  redirect,
-} from "@remix-run/node";
-import { loadStory } from "~/services/watsonx.server";
-import { createSupabaseServerClient } from "~/services/upabase.server";
-import { arraysHaveCommonElements } from "~/utils/keywordsSimilarity";
-import { getSession } from "~/services/session.server";
-import { useProfile } from "~/context/ProfileContext";
-import { Story } from "~/types";
-import { getStoryCover } from "~/utils/colors";
+import {useTranslation} from "react-i18next";
+import {ActionFunction, json, LoaderFunctionArgs, redirect,} from "@remix-run/node";
+import {loadStory} from "~/services/watsonx.server";
+import {createSupabaseServerClient} from "~/services/upabase.server";
+import {arraysHaveCommonElements} from "~/utils/keywordsSimilarity";
+import {getSession} from "~/services/session.server";
+import {useProfile} from "~/context/ProfileContext";
+import {Story} from "~/types";
+import {getStoryCover} from "~/utils/colors";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
@@ -108,8 +103,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const StoriesPage = () => {
-  const profile: any = useProfile();
-  let { t } = useTranslation("stories");
+  const {profile} = useProfile();
+  const { t } = useTranslation("stories");
   const fetcher = useFetcher();
   const { stories, storiesForYou, error }: any = useLoaderData();
   const loading = fetcher.state === "submitting";
@@ -118,7 +113,7 @@ const StoriesPage = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  const name = profile?.display_name.split(" ")[0];
+  const name = profile?.displayName.split(" ")[0];
   const forYou = storiesForYou;
 
   const navigate = useNavigate();

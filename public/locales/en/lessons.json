@@ -1,1 +1,6 @@
-{}
+{
+  "check": "Check",
+  "continue": "Continue",
+  "niceJob": "Nice job!",
+  "correctSolution": "Correct solution:"
+}
