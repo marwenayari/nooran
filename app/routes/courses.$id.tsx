@@ -2,20 +2,51 @@ import { json, LoaderFunctionArgs } from '@remix-run/node'
 import { Link, NavLink, useLoaderData } from '@remix-run/react'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseDetails, toCourseDetails } from '~/models/CourseDetails'
+import { getSession } from '~/services/session.server'
+import { toLessonDetails } from '~/models/LessonDetails'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request)
-  const { data } = await supabase
+  const session = await getSession(request.headers.get('Cookie'))
+  // get current course
+  const courseData = await supabase
     .from('courses')
-    .select('id, title, description, progress_color, color, lessons(id, title)')
+    .select('id, title, description, progress_color')
     .match({ id: Number(params['id']) })
     .single()
-  return json(toCourseDetails(data))
+  // get All Lessons of current course
+  const lessonsData = await supabase
+    .from('lessons')
+    .select('id, title, challenges(*)')
+    .match({ course_id: courseData.data?.id })
+  // get All challenges in lessons and user id
+  const challenges = lessonsData.data?.flatMap(lesson => lesson.challenges) || []
+  const challengeIds = challenges.map(challenge => Number(challenge.id))
+  const challengeProgressData = await supabase
+    .from('challenge_progress')
+    .select('*')
+    .match({user_id: session.get('user')?.id })
+    .in('challenge_id', challengeIds)
+  // calculate percentage of completion of each lesson
+  const progressByLesson: any = {}
+  lessonsData.data?.forEach(lesson => {
+    const challengeIdsOfCurrentLesson = challenges.filter(challenge => challenge.lesson_id === lesson.id).map(challenge => Number(challenge.id))
+    const progressOfCurrentLesson = challengeProgressData.data?.filter(progress => challengeIdsOfCurrentLesson.includes(progress.challenge_id))
+    progressByLesson[lesson.id] = progressOfCurrentLesson && lesson.challenges.length ? (progressOfCurrentLesson.length * 100) / lesson.challenges.length : 0;
+  })
+
+  return json({
+    course: {
+      ...toCourseDetails(courseData.data),
+      lessons: lessonsData.data?.map(toLessonDetails)
+    },
+    progressByLesson
+  })
 }
 
 const CoursePage = () => {
-  const course = useLoaderData<CourseDetails>()
-  const totalProgress = 3
+  const {course, progressByLesson} = useLoaderData<{course: CourseDetails, progressByLesson: any}>()
+
   const getMarginLeft = (index: number) => {
     const mls = [
       'ml-0 rtl:mr-0',
@@ -30,7 +61,10 @@ const CoursePage = () => {
   }
 
   const getBgColor = (lessonId: number) => {
-    return totalProgress >= lessonId ? course.progressColor : lessonId == totalProgress + 1 ? course.color : 'lightgray'
+    if(progressByLesson[lessonId] && progressByLesson[lessonId]) {
+    return progressByLesson[lessonId] <100 ? course.color : course.progressColor
+    }
+    return 'lightgray'
   }
 
   return (
@@ -64,12 +98,10 @@ const CoursePage = () => {
             }}
           >
             {({ isTransitioning }) => (
-              <>
                 <i
                   className='text-4xl text-white ri-star-fill cursor-pointer'
                   style={isTransitioning ? { viewTransitionName: 'lesson-stone-transition-' + lesson.id } : undefined}
                 ></i>
-              </>
             )}
           </NavLink>
         ))}
