@@ -166,14 +166,14 @@ const LessonPage = () => {
                 <ImageAndAudioWithOptionsChallenge
                   currentOptionId={currentAnswer}
                   challenge={currentChallenge}
-                  opOptionClick={(option) => setCurrentAnswer(option.id)}
+                  opOptionClick={(option) => status === Status.question ? setCurrentAnswer(option.id): null}
                 />
               )}
               {currentChallenge.type === ChallengeType.audioWithOptions && (
                 <AudioWithOptionsChallenge
                   currentOptionId={currentAnswer}
                   challenge={currentChallenge}
-                  opOptionClick={(option) => setCurrentAnswer(option.id)}
+                  opOptionClick={(option) => status === Status.question ? setCurrentAnswer(option.id): null}
                 />
               )}
             </div>
