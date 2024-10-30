@@ -11,7 +11,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   // get current course
   const courseData = await supabase
     .from('courses')
-    .select('id, title, description, progress_color')
+    .select('id, title, description, color, progress_color')
     .match({ id: Number(params['id']) })
     .single()
   // get All Lessons of current course
