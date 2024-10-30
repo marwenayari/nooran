@@ -20,7 +20,10 @@ const ReadPage = () => {
   }
 
   return (
-    <section className='w-screen h-screen flex flex-col items-center pt-10'>
+    <section
+      className='w-screen h-screen flex flex-col items-center pt-10'
+      style={{ viewTransitionName: 'read-transition' }}
+    >
       <div className='story-bg w-full h-full absolute left-0 top-0 opacity-20'></div>
       <div className='story-header pb-3 flex gap-x-7 items-center justify-end max-w-[1140px] mx-auto w-full px-10'>
         <Link prefetch='viewport' to={'/stories?type=0' + '&selected=' + selectedStory.key}>

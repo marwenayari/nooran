@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs } from '@remix-run/node'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, NavLink, useLoaderData } from '@remix-run/react'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseDetails, toCourseDetails } from '~/models/CourseDetails'
 
@@ -7,7 +7,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request)
   const { data } = await supabase
     .from('courses')
-    .select('id, title, description, progress_color, lessons(id, title)')
+    .select('id, title, description, progress_color, color, lessons(id, title)')
     .match({ id: Number(params['id']) })
     .single()
   return json(toCourseDetails(data))
@@ -15,6 +15,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 const CoursePage = () => {
   const course = useLoaderData<CourseDetails>()
+  const totalProgress = 3
   const getMarginLeft = (index: number) => {
     const mls = [
       'ml-0 rtl:mr-0',
@@ -26,6 +27,10 @@ const CoursePage = () => {
       'ml-[4rem] rtl:ml-0 rtl:mr-[4rem]'
     ]
     return mls[index % 6]
+  }
+
+  const getBgColor = (lessonId: number) => {
+    return totalProgress >= lessonId ? course.progressColor : lessonId == totalProgress + 1 ? course.color : 'lightgray'
   }
 
   return (
@@ -46,19 +51,27 @@ const CoursePage = () => {
       </div>
       <div className='path lessons flex flex-col gap-8 justify-between items-center pt-8 pb-4'>
         {course.lessons.map((lesson, idx) => (
-          <Link
+          <NavLink
             to={`/lessons/${lesson.id}`}
+            unstable_viewTransition
             prefetch='viewport'
             key={lesson.id}
             className={`flex items-center justify-center shadow-lg shadow-slate-400 rounded-full w-16 h-16 ${getMarginLeft(
               idx
             )}`}
             style={{
-              backgroundColor: course.progressColor
+              backgroundColor: getBgColor(lesson.id)
             }}
           >
-            <i className='text-4xl text-white ri-star-fill cursor-pointer'></i>
-          </Link>
+            {({ isTransitioning }) => (
+              <>
+                <i
+                  className='text-4xl text-white ri-star-fill cursor-pointer'
+                  style={isTransitioning ? { viewTransitionName: 'lesson-stone-transition-' + lesson.id } : undefined}
+                ></i>
+              </>
+            )}
+          </NavLink>
         ))}
         {/* <img
           className="w-56"
