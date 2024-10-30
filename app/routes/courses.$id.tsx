@@ -46,7 +46,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 const CoursePage = () => {
   const {course, progressByLesson} = useLoaderData<{course: CourseDetails, progressByLesson: any}>()
-  const totalProgress = 3
 
   const getMarginLeft = (index: number) => {
     const mls = [
@@ -62,7 +61,10 @@ const CoursePage = () => {
   }
 
   const getBgColor = (lessonId: number) => {
-    return totalProgress >= lessonId ? course.progressColor : lessonId == totalProgress + 1 ? course.color : 'lightgray'
+    if(progressByLesson[lessonId] && progressByLesson[lessonId]) {
+    return progressByLesson[lessonId] <100 ? course.color : course.progressColor
+    }
+    return 'lightgray'
   }
 
   return (
@@ -96,12 +98,10 @@ const CoursePage = () => {
             }}
           >
             {({ isTransitioning }) => (
-              <>
                 <i
                   className='text-4xl text-white ri-star-fill cursor-pointer'
                   style={isTransitioning ? { viewTransitionName: 'lesson-stone-transition-' + lesson.id } : undefined}
                 ></i>
-              </>
             )}
           </NavLink>
         ))}
