@@ -1,5 +1,6 @@
 import {
   Link,
+  NavLink,
   ShouldRevalidateFunction,
   useFetcher,
   useLoaderData,
@@ -15,6 +16,7 @@ import { getSession } from '~/services/session.server'
 import { useProfile } from '~/context/ProfileContext'
 import { Story } from '~/types'
 import { getStoryCover } from '~/utils/colors'
+import StoryPreview from '~/components/StoryPreview'
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ currentUrl, nextUrl, formAction, formMethod }) => {
   if (formAction || formMethod) {
@@ -109,18 +111,10 @@ const StoriesPage = () => {
   const name = profile?.displayName.split(' ')[0]
   const forYou = storiesForYou
 
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const type = parseInt(searchParams.get('type') || '-1')
   const selected = parseInt(searchParams.get('selected') || '-1')
-
-  function selectStory(type: number, key: number) {
-    navigate('/stories?type=' + type + '&selected=' + key)
-    localStorage.setItem('selectedStory', JSON.stringify({ type: type, key: key }))
-    localStorage.setItem('story', JSON.stringify(type == 0 ? stories[key] : forYou[key]))
-    // use client side navigation to /stories?type=" + type + "&selected=" + key like if using <Link> in html
-  }
 
   const generateStory = () => {
     if (paid) {
@@ -168,31 +162,10 @@ const StoriesPage = () => {
               {t('generate-story')}
             </span>
           </button>
-          {/* TODO: Delete if will not use*/}
-          {/* <button className="w-48 brightness-150 dark:brightness-100 group hover:shadow-lg hover:shadow-yellow-700/60 transition ease-in-out hover:scale-105 p-1 rounded-3xl bg-gradient-to-br from-yellow-800 via-yellow-600 to-yellow-800 hover:from-yellow-700 hover:via-yellow-800 hover:to-yellow-600">
-            <div className="px-6 py-2 backdrop-blur-xl bg-black/80 rounded-3xl font-bold ">
-              <div className="group-hover:scale-100 flex group-hover:text-yellow-500 text-yellow-600 font-medium gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.8"
-                  className="w-6 h-6 stroke-yellow-600 group-hover:stroke-yellow-500 group-hover:stroke-{1.99}"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
-                  ></path>
-                </svg>
-                {t("generate-story")}
-              </div>
-            </div>
-          </button> */}
         </div>
 
         <h2 className='text-3xl text-slate-800'>{t('latest-stories')}</h2>
-        <div className='flex gap-10  overflow-x-scroll w-screen/2'>
+        <div className='flex gap-10 overflow-y-hidden overflow-x-scroll w-screen/2'>
           {loading ? (
             <div className='h-40 w-28 min-w-28'>
               <div className='border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto mb-3 h-40'>
@@ -217,19 +190,27 @@ const StoriesPage = () => {
           {stories.length ? (
             stories.map((story: Story, idx: number) => (
               <div key={story.id}>
-                <div
-                  onClick={() => {
-                    selectStory(0, idx)
-                  }}
-                  className={`cover cursor-pointer shadow-xl h-40 w-28 rounded-md  ${getStoryCover(
-                    idx
-                  )} text-center p-2 text-white mb-3`}
-                >
-                  <h4>{story.title}</h4>
-                </div>
-                <Link to={'/stories?type=0' + '&selected=' + idx} className='cursor-pointer w-28 rtl'>
-                  {story.title.length <= 15 ? story.title : '...' + story.title.substring(0, 15)}
-                </Link>
+                <NavLink to={'/stories?type=0' + '&selected=' + idx} unstable_viewTransition>
+                  {({ isTransitioning }) => (
+                    <>
+                      <div
+                        className={`cover cursor-pointer shadow-xl h-40 w-28 rounded-md  ${getStoryCover(
+                          idx
+                        )} text-center p-2 text-white mb-3`}
+                        style={
+                          isTransitioning && selected != idx
+                            ? { viewTransitionName: 'cover-transition' + story.id }
+                            : undefined
+                        }
+                      >
+                        <h4>{story.title}</h4>
+                      </div>
+                    </>
+                  )}
+                </NavLink>
+                <span className='cursor-pointer w-28 rtl'>
+                  {story.title.length <= 15 ? story.title : '...' + story.title.substring(0, 10)}
+                </span>
               </div>
             ))
           ) : (
@@ -242,15 +223,10 @@ const StoriesPage = () => {
           <h2 className='text-3xl text-slate-800'>{t('for-you')}</h2>
           <h2 className='text-md mt-[-5px] text-slate-600'>| {t('stories-by-others')}</h2>
         </div>
-        <div className='flex gap-10  overflow-x-scroll w-full'>
+        <div className='flex gap-10 overflow-y-hidden overflow-x-scroll w-full'>
           {forYou.length ? (
             forYou.map((story: Story, idx: number) => (
-              <div
-                key={story.id}
-                onClick={() => {
-                  selectStory(1, idx)
-                }}
-              >
+              <div key={story.id}>
                 <div
                   className={`cover cursor-pointer shadow-xl rounded-md h-40 w-28 ${getStoryCover(
                     idx
@@ -267,41 +243,9 @@ const StoriesPage = () => {
             </div>
           )}
         </div>
-
-        {/* {actionData?.story && (
-          <div className="mt-4">
-            <p>{actionData.story}</p>
-          </div>
-        )} */}
-
-        {/* {actionData?.error && <p>Error: {actionData.error}</p>} */}
       </section>
-      {selected != -1 ? (
-        <section className='w-2/5 fixed ltr:right-0 rtl:left-0 top-0 bg-white h-full p-16'>
-          <div className='flex gap-4'>
-            <div
-              className={`cover ltr:ml-[-7rem]  rtl:mr-[-7rem] cursor-pointer rounded-md shadow-xl min-w-28 h-40 w-28 ${getStoryCover(
-                selected
-              )} text-center p-2 text-white`}
-            >
-              <h2>{getStory(selected).title}</h2>
-            </div>
-            <div className='h-40 flex flex-col justify-between'>
-              <h2 className='text-3xl text-slate-800'>{getStory(selected).title}</h2>
-              <p className='text-slate-800 '>{getStory(selected).brief}</p>
-              <Link
-                to={'/read'}
-                className='flex justify-center items-center w-40 rounded-full bg-slate-800 text-white h-10'
-              >
-                {t('start-reading')}
-                <i className='text-xl font-thin mb-[-4px] ri-arrow-right-up-line'></i>
-              </Link>
-            </div>
-          </div>
-        </section>
-      ) : (
-        ''
-      )}
+      {/* Use StoryPreview component here */}
+      {selected != -1 ? <StoryPreview story={getStory(selected)} /> : ''}
     </section>
   )
 }

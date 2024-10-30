@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { Link, useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
+import { Link, useFetcher, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { LessonDetails, toLessonDetails } from '~/models/LessonDetails'
@@ -90,6 +90,8 @@ const LessonPage = () => {
   const navigate = useNavigate()
   const { t } = useTranslation('lessons')
   const fetcher = useFetcher<{ correct: boolean }>()
+  const [searchParams] = useSearchParams()
+  const lessonId = parseInt(searchParams.get('id') || '-1')
 
   const currentLesson = useLoaderData<LessonDetails>()
   // const questions = useLoaderData<typeof loader>();
@@ -142,7 +144,10 @@ const LessonPage = () => {
   }
 
   return (
-    <section className='w-screen h-screen flex flex-col items-center pt-10'>
+    <section
+      className='w-screen h-screen flex flex-col items-center pt-10'
+      style={{ viewTransitionName: 'lesson-stone-transition-' + lessonId }}
+    >
       <div className='pb-3 px-4 flex gap-x-7 items-center justify-between max-w-[1140px] mx-auto w-full'>
         <Link
           to={'/courses/' + currentLesson.course.id}
