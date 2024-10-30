@@ -56,6 +56,7 @@ export default function SideBar() {
       {isGuest && (
         <Link
           to={'/auth'}
+          prefetch='intent'
           className='
           text-xl text-blue-400 font-bold uppercase mb-4
           border-solid border-2 border-blue-400 rounded-md px-2'
