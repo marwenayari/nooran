@@ -8,6 +8,7 @@ import { toLessonDetails } from '~/models/LessonDetails'
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { supabase } = createSupabaseServerClient(request)
   const session = await getSession(request.headers.get('Cookie'))
+
   // get current course
   const courseData = await supabase
     .from('courses')

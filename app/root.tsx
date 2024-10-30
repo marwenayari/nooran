@@ -6,7 +6,7 @@ import 'remixicon/fonts/remixicon.css'
 import './tailwind.css'
 import './style.css'
 import { useChangeLanguage } from 'remix-i18next/react'
-import { useSSR, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import SideBar from './components/SideBar'
 import SideMenu from './components/SideMenu'
 import { ShouldRevalidateFunction, useLocation } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { ProfileProvider } from './context/ProfileContext'
 import { Profile, toProfile } from '~/models/Profile'
 import i18next from '~/i18n/i18next.server'
 import { useEffect } from 'react'
+import { UserCourse } from '~/models/UserCourse'
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -54,8 +55,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('language') : null
   const locale = storedLanguage || (await i18next.getLocale(request))
+
+  const courseWithProgressResult = await supabase.rpc('get_courses_with_progress_percentage', { user_id_param: session.get('user')?.id  });
+
+  let userCourses = [];
+  if (!courseWithProgressResult.error) {
+    userCourses = courseWithProgressResult.data;
+  }
+
+
   return json(
-    { userProfile: profile, user, locale },
+    { userProfile: profile, user, locale, userCourses },
     {
       headers: {
         'Set-Cookie': await commitSession(session)
@@ -64,14 +74,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   )
 }
 
-// export const handle = {
-//   i18n: "common",
-// };
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { userProfile, locale } = useLoaderData<{
+  const { userProfile, locale, userCourses } = useLoaderData<{
     userProfile: Profile
     locale: string
-    user: any
+    user: any,
+    userCourses: UserCourse[]
   }>()
 
   const { i18n } = useTranslation()
@@ -115,7 +123,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
               >
                 <SideMenu />
                 <section className='h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll'>{children}</section>
-                <SideBar />
+                <SideBar userCourses={userCourses}/>
               </section>
             )}
           </ProfileProvider>

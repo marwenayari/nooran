@@ -2,8 +2,13 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
 import { Form, Link, useLocation, useNavigate } from '@remix-run/react'
 import { useProfile } from '~/context/ProfileContext'
+import { UserCourse } from '~/models/UserCourse'
 
-export default function SideBar() {
+interface Props {
+  userCourses: UserCourse[]
+}
+
+export default function SideBar({ userCourses }: Props) {
   const { t } = useTranslation('sidebar')
   const navigate = useNavigate()
   const { profile } = useProfile()
@@ -91,18 +96,30 @@ export default function SideBar() {
           </div>
         </div>
       </section>
-      <h4 className='w-full mb-2'>{t('my-lessons')}</h4>
-      <section className='flex overflow-y-scroll flex-col gap-2 w-full h-full'>
-        <div className='course-card w-full h-20 bg-red-200 rounded-xl p-4'>
-          <Link to='/courses/0'>Arabic 101</Link>
-        </div>
-        <div className='course-card w-full h-20 bg-orange-200 rounded-xl p-4'>
-          <Link to='/courses/1'>Arabic 201</Link>
-        </div>
-        <div className='course-card w-full h-20 bg-violet-200 rounded-xl p-4'>
-          <Link to='/courses/2'>Arabic 301</Link>
-        </div>
-      </section>
+
+      {
+        userCourses.length > 0 && (
+          <>
+            <h4 className="w-full mb-2">{t('my-lessons')}</h4>
+            <section className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
+              {
+                userCourses.map(course => (
+                  <Link key={course.id} to={`/courses/${course.id}`}
+                        className="course-card w-full py-5 relative rounded-xl p-4"
+                        style={{ backgroundColor: course.color }}>
+                    <div className="absolute w-full h-full rounded-xl z-0 top-0 left-0 "
+                         style={{ backgroundColor: course.progresscolor, width: `${course.progress}%` }}></div>
+                    <span className="relative z-10">
+                      {course.title}
+                    </span>
+                  </Link>
+                ))
+              }
+            </section>
+          </>
+        )
+      }
+
     </section>
   )
 }
