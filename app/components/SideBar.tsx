@@ -108,7 +108,7 @@ export default function SideBar({ userCourses }: Props) {
                         className="course-card w-full py-5 relative rounded-xl p-4"
                         style={{ backgroundColor: course.color }}>
                     <div className="absolute w-full h-full rounded-xl z-0 top-0 left-0 "
-                         style={{ backgroundColor: course.progresscolor, width: `${course.progress}%` }}></div>
+                         style={{ backgroundColor: course.progressColor, width: `${course.progress}%` }}></div>
                     <span className="relative z-10">
                       {course.title}
                     </span>
