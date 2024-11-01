@@ -4,10 +4,15 @@ import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseDetails, toCourseDetails } from '~/models/CourseDetails'
 import { getSession } from '~/services/session.server'
 import { toLessonDetails } from '~/models/LessonDetails'
+import i18next from '~/i18n/i18next.server'
+import { localeCookie } from '~/utils/cookies'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  const cookieHeader = request.headers.get("Cookie");
+  const locale = await localeCookie.parse(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
-  const session = await getSession(request.headers.get('Cookie'))
+  const session = await getSession(cookieHeader)
+
   // get current course
   const courseData = await supabase
     .from('courses')
@@ -37,7 +42,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   return json({
     course: {
-      ...toCourseDetails(courseData.data),
+      ...toCourseDetails(courseData.data, locale),
       lessons: lessonsData.data?.map(toLessonDetails)
     },
     progressByLesson

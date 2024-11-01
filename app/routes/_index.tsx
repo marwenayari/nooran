@@ -3,6 +3,8 @@ import { Link, useLoaderData } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseSummary, toCourseSummary } from '~/models/CourseSummary'
+import { localeCookie } from '~/utils/cookies'
+import { Suspense } from 'react'
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Nooran' }, { name: 'description', content: 'Welcome to Nooran!' }]
@@ -33,10 +35,12 @@ const categories = [
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { supabase } = createSupabaseServerClient(request)
+  const cookieHeader = request.headers.get('Cookie')
+  const locale = await localeCookie.parse(cookieHeader)
 
   const { data } = await supabase.from('courses').select().order('created_at', { ascending: true })
 
-  return json(data?.map(toCourseSummary))
+  return json(data?.map(course => toCourseSummary(course, locale)))
 }
 
 export default function Index() {
@@ -46,10 +50,10 @@ export default function Index() {
     selected = key
   }
 
-  const levels = ['beginner', 'intermediate', 'advanced']
   const courses = useLoaderData<CourseSummary[]>()
 
   return (
+
     <div>
       <h1 className='font-thin text-4xl md:text-6xl md:w-1/2 lg:w-1/2 xl:1/3 mb-8'>{t('title')}</h1>
       <div className='flex flex-col my-4'>
