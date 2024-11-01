@@ -10,15 +10,14 @@ export default function LanguageSwitcher() {
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang)
-    localStorage.setItem('language', lang)
     fetcher.submit({ lang }, { method: 'patch', action: '/profile' })
   }
 
   useEffect(() => {
     if (profile && profile?.locale) {
       i18n.changeLanguage(profile?.locale)
-      localStorage.setItem('language', profile?.locale)
     }
+
   }, [profile])
 
   return (

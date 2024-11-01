@@ -105,7 +105,7 @@ export default function Auth() {
   useEffect(() => {
     if(actionData && actionData.profile?.id) {
       updateProfile(actionData.profile)
-      navigate('/')
+      navigate('/?t=' + Date.now())
     }
   }, [actionData]);
 

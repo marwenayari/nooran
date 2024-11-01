@@ -1,3 +1,5 @@
+import { translationsToString } from '~/models/Translations'
+
 export interface CourseSummary {
     id: number,
     title: string,
@@ -7,12 +9,12 @@ export interface CourseSummary {
     price: number
 }
 
-export function toCourseSummary(json: any): CourseSummary {
+export function toCourseSummary(json: any, locale: string): CourseSummary {
     const levels = ['beginner','intermediate','advanced']
     return {
         id: json?.id,
-        title: json?.title || '',
-        description: json?.description || '',
+        title: translationsToString(json?.title, locale),
+        description: translationsToString(json?.description, locale),
         color: json?.color || '#f4ebe5',
         level: levels[json?.level - 1] || 'beginner',
         price: json?.price || 0
