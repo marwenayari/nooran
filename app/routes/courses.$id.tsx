@@ -8,7 +8,7 @@ import i18next from '~/i18n/i18next.server'
 import { localeCookie } from '~/utils/cookies'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
+  const cookieHeader = request.headers.get('Cookie')
   const locale = await localeCookie.parse(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
   const session = await getSession(cookieHeader)
@@ -25,19 +25,26 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     .select('id, title, challenges(*)')
     .match({ course_id: courseData.data?.id })
   // get All challenges in lessons and user id
-  const challenges = lessonsData.data?.flatMap(lesson => lesson.challenges) || []
-  const challengeIds = challenges.map(challenge => Number(challenge.id))
+  const challenges = lessonsData.data?.flatMap((lesson) => lesson.challenges) || []
+  const challengeIds = challenges.map((challenge) => Number(challenge.id))
   const challengeProgressData = await supabase
     .from('challenge_progress')
     .select('*')
-    .match({user_id: session.get('user')?.id })
+    .match({ user_id: session.get('user')?.id })
     .in('challenge_id', challengeIds)
   // calculate percentage of completion of each lesson
   const progressByLesson: any = {}
-  lessonsData.data?.forEach(lesson => {
-    const challengeIdsOfCurrentLesson = challenges.filter(challenge => challenge.lesson_id === lesson.id).map(challenge => Number(challenge.id))
-    const progressOfCurrentLesson = challengeProgressData.data?.filter(progress => challengeIdsOfCurrentLesson.includes(progress.challenge_id))
-    progressByLesson[lesson.id] = progressOfCurrentLesson && lesson.challenges.length ? (progressOfCurrentLesson.length * 100) / lesson.challenges.length : 0;
+  lessonsData.data?.forEach((lesson) => {
+    const challengeIdsOfCurrentLesson = challenges
+      .filter((challenge) => challenge.lesson_id === lesson.id)
+      .map((challenge) => Number(challenge.id))
+    const progressOfCurrentLesson = challengeProgressData.data?.filter((progress) =>
+      challengeIdsOfCurrentLesson.includes(progress.challenge_id)
+    )
+    progressByLesson[lesson.id] =
+      progressOfCurrentLesson && lesson.challenges.length
+        ? (progressOfCurrentLesson.length * 100) / lesson.challenges.length
+        : 0
   })
 
   return json({
@@ -50,7 +57,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 }
 
 const CoursePage = () => {
-  const {course, progressByLesson} = useLoaderData<{course: CourseDetails, progressByLesson: any}>()
+  const { course, progressByLesson } = useLoaderData<{ course: CourseDetails; progressByLesson: any }>()
 
   const getMarginLeft = (index: number) => {
     const mls = [
@@ -66,8 +73,8 @@ const CoursePage = () => {
   }
 
   const getBgColor = (lessonId: number) => {
-    if(progressByLesson[lessonId] && progressByLesson[lessonId]) {
-    return progressByLesson[lessonId] <100 ? course.color : course.progressColor
+    if (progressByLesson[lessonId] && progressByLesson[lessonId]) {
+      return progressByLesson[lessonId] < 100 ? course.color : course.progressColor
     }
     return 'lightgray'
   }
@@ -103,10 +110,10 @@ const CoursePage = () => {
             }}
           >
             {({ isTransitioning }) => (
-                <i
-                  className='text-4xl text-white ri-star-fill cursor-pointer'
-                  style={isTransitioning ? { viewTransitionName: 'lesson-stone-transition-' + lesson.id } : undefined}
-                ></i>
+              <i
+                className='text-4xl text-white ri-star-fill cursor-pointer'
+                style={isTransitioning ? { viewTransitionName: 'lesson-stone-transition-' + lesson.id } : undefined}
+              ></i>
             )}
           </NavLink>
         ))}

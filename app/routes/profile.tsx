@@ -6,55 +6,49 @@ import { createSupabaseServerClient } from '~/services/upabase.server'
 import { getSession } from '~/services/session.server'
 import { localeCookie } from '~/utils/cookies'
 
-export async function action({request}: ActionFunctionArgs) {
-  const {supabase} = createSupabaseServerClient(request);
-  const formaData = await request.formData();
-  const session = await getSession(request.headers.get("Cookie"));
+export async function action({ request }: ActionFunctionArgs) {
+  const { supabase } = createSupabaseServerClient(request)
+  const formaData = await request.formData()
+  const session = await getSession(request.headers.get('Cookie'))
 
   if (formaData.has('lang') && session.has('user')) {
-    await supabase.from('profiles').update({
-      locale: formaData.get('lang')
-    }).match({user_id: session.get('user')['id']});
+    await supabase
+      .from('profiles')
+      .update({
+        locale: formaData.get('lang')
+      })
+      .match({ user_id: session.get('user')['id'] })
   }
 
-  return json({ lang: formaData.get('lang') }, {
-    headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')) }
-  })
+  return json(
+    { lang: formaData.get('lang') },
+    {
+      headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')) }
+    }
+  )
 }
 
 const ProfilePage = () => {
-  const { t } = useTranslation("profile");
-  const {profile} = useProfile();
-  const name = profile?.displayName || "";
+  const { t } = useTranslation('profile')
+  const { profile } = useProfile()
+  const name = profile?.displayName || ''
 
   return (
-    <div className="profile-settings">
-      <h1 className="text-3xl">{t("title")}</h1>
-      <Form method="post">
-        <div className="form-group">
-          <label htmlFor="username">{t("username")}: </label>
-          <input
-            className="p-2"
-            type="text"
-            id="username"
-            name="username"
-            defaultValue={name}
-          />
+    <div className='profile-settings'>
+      <h1 className='text-3xl'>{t('title')}</h1>
+      <Form method='post'>
+        <div className='form-group'>
+          <label htmlFor='username'>{t('username')}: </label>
+          <input className='p-2' type='text' id='username' name='username' defaultValue={name} />
         </div>
-        <div className="form-group">
-          <label htmlFor="email">{t("email")}: </label>
-          <input
-            className="p-2"
-            type="email"
-            id="email"
-            name="email"
-            defaultValue={name}
-          />
+        <div className='form-group'>
+          <label htmlFor='email'>{t('email')}: </label>
+          <input className='p-2' type='email' id='email' name='email' defaultValue={name} />
         </div>
-        <button type="submit">{t("common:save")}</button>
+        <button type='submit'>{t('common:save')}</button>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default ProfilePage;
+export default ProfilePage

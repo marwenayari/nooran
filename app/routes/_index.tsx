@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const { data } = await supabase.from('courses').select().order('created_at', { ascending: true })
 
-  return json(data?.map(course => toCourseSummary(course, locale)))
+  return json(data?.map((course) => toCourseSummary(course, locale)))
 }
 
 export default function Index() {
@@ -53,7 +53,6 @@ export default function Index() {
   const courses = useLoaderData<CourseSummary[]>()
 
   return (
-
     <div>
       <h1 className='font-thin text-4xl md:text-6xl md:w-1/2 lg:w-1/2 xl:1/3 mb-8'>{t('title')}</h1>
       <div className='flex flex-col my-4'>

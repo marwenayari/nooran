@@ -74,4 +74,4 @@ IMPORTANT: Keep the output result in the same format as the expected output bell
   "min_age": minimum age,
   "max_age": maximum age
 }
-`;
+`
