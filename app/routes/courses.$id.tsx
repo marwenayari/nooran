@@ -4,7 +4,6 @@ import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseDetails, toCourseDetails } from '~/models/CourseDetails'
 import { getSession } from '~/services/session.server'
 import { toLessonDetails } from '~/models/LessonDetails'
-import i18next from '~/i18n/i18next.server'
 import { localeCookie } from '~/utils/cookies'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -50,7 +49,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({
     course: {
       ...toCourseDetails(courseData.data, locale),
-      lessons: lessonsData.data?.map(toLessonDetails)
+      lessons: lessonsData.data?.map(jsonData => toLessonDetails(jsonData, locale))
     },
     progressByLesson
   })
