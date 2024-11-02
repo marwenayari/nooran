@@ -1,4 +1,5 @@
 import { ChallengeOption, toChallengeOption } from '~/models/ChallengeOption'
+import { translationsToString } from '~/models/Translations'
 
 export interface Challenge {
   id: number
@@ -11,14 +12,14 @@ export interface Challenge {
   completed: boolean
 }
 
-export function toChallenge(json: any): Challenge {
+export function toChallenge(json: any, locale: string): Challenge {
   return {
     id: json?.id,
-    question: json?.question || '',
+    question: translationsToString(json?.question, locale),
     type: json?.type || 'text',
     imageSource: json?.image_source,
     audio: json?.audio,
-    options: json?.challenge_options?.map(toChallengeOption),
+    options: json?.challenge_options?.map((data: any) => toChallengeOption(data, locale)),
     order: json?.order,
     completed: false
   }

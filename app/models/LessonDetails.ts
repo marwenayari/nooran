@@ -10,7 +10,7 @@ export interface LessonDetails {
   challenges: Challenge[]
 }
 
-export function toLessonDetails(json: any): LessonDetails {
+export function toLessonDetails(json: any, locale: string): LessonDetails {
   return {
     id: json?.id,
     title: json?.title || '',
@@ -18,6 +18,6 @@ export function toLessonDetails(json: any): LessonDetails {
       id: json?.courses?.id!,
       title: json?.courses?.title || ''
     },
-    challenges: json?.challenges?.map(toChallenge)
+    challenges: json?.challenges?.map((jsonChallenge: any) => toChallenge(jsonChallenge, locale))
   }
 }
