@@ -17,7 +17,6 @@ export default function LanguageSwitcher() {
     if (profile && profile?.locale) {
       i18n.changeLanguage(profile?.locale)
     }
-
   }, [profile])
 
   return (
