@@ -23,7 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return json(
     { lang: formaData.get('lang') },
     {
-      headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')) }
+      headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')), 'Clear-Site-Data': '"cache"' }
     }
   )
 }

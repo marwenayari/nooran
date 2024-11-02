@@ -51,6 +51,7 @@ export default function Index() {
   }
 
   const courses = useLoaderData<CourseSummary[]>()
+  console.log('renderd')
 
   return (
     <div>
@@ -58,7 +59,7 @@ export default function Index() {
       <div className='flex flex-col my-4'>
         <div className='flex flex-row overflow-scroll'>
           {categories.map((category) => (
-            <div
+            <button
               onClick={() => {
                 selectCategory(category.key)
               }}
@@ -66,14 +67,14 @@ export default function Index() {
               className='mr-4 p-2 px-4 md:p-4 bg-dark-beige rounded-xl cursor-pointer'
             >
               <h3>{t(category.title)}</h3>
-            </div>
+            </button>
           ))}
         </div>
       </div>
       <div className='flex flex-col'>
         <h2 className='font-thin text-2xl my-3'>{t('recent')}</h2>
         <div className='flex flex-row flex-wrap'>
-          {courses.map((course, idx) => (
+          {courses.map((course) => (
             <Link
               className={`
                 flex flex-col justify-between cursor-pointer p-2 md:-4 lg:p-4 xl:p-4 rounded-xl
@@ -84,6 +85,7 @@ export default function Index() {
               }}
               to={'/courses/' + course.id}
               prefetch='viewport'
+
             >
               <div className='flex justify-between items-center'>
                 <span className='uppercase text-sm'>{t(course.level)} </span>
