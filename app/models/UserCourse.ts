@@ -1,9 +1,9 @@
 import { translationsToString } from '~/models/Translations'
 
-export interface UserCourse{
-  id: number,
-  title: string,
-  progress: number,
+export interface UserCourse {
+  id: number
+  title: string
+  progress: number
   progressColor: string
   color: string
 }

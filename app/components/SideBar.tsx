@@ -97,29 +97,27 @@ export default function SideBar({ userCourses }: Props) {
         </div>
       </section>
 
-      {
-        userCourses.length > 0 && (
-          <>
-            <h4 className="w-full mb-2">{t('my-lessons')}</h4>
-            <section className="flex overflow-y-scroll flex-col gap-2 w-full h-full">
-              {
-                userCourses.map(course => (
-                  <Link key={course.id} to={`/courses/${course.id}`}
-                        className="course-card w-full py-5 relative rounded-xl p-4"
-                        style={{ backgroundColor: course.color }}>
-                    <div className="absolute w-full h-full rounded-xl z-0 top-0 left-0 "
-                         style={{ backgroundColor: course.progressColor, width: `${course.progress}%` }}></div>
-                    <span className="relative z-10">
-                      {course.title}
-                    </span>
-                  </Link>
-                ))
-              }
-            </section>
-          </>
-        )
-      }
-
+      {userCourses.length > 0 && (
+        <>
+          <h4 className='w-full mb-2'>{t('my-lessons')}</h4>
+          <section className='flex overflow-y-scroll flex-col gap-2 w-full h-full'>
+            {userCourses.map((course) => (
+              <Link
+                key={course.id}
+                to={`/courses/${course.id}`}
+                className='course-card w-full py-5 relative rounded-xl p-4'
+                style={{ backgroundColor: course.color }}
+              >
+                <div
+                  className='absolute w-full h-full rounded-xl z-0 top-0 left-0 '
+                  style={{ backgroundColor: course.progressColor, width: `${course.progress}%` }}
+                ></div>
+                <span className='relative z-10'>{course.title}</span>
+              </Link>
+            ))}
+          </section>
+        </>
+      )}
     </section>
   )
 }
