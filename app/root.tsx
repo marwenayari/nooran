@@ -81,12 +81,15 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
     userCourses: UserCourse[]
   }>()
   const [direction, setDirection] = useState<string>(locale === 'ar' ? 'rtl' : 'ltr')
+  const [language, setLanguage] = useState<string>(locale)
 
   const { i18n } = useTranslation()
 
   useEffect(() => {
     i18n.on('languageChanged', () => {
       setDirection(i18n.dir())
+      setLanguage(i18n.language)
+
     })
   }, [i18n])
 
@@ -96,7 +99,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const isFullScreen = fullScreenPaths.some((value) => location.pathname.startsWith(value))
 
   return (
-    <html lang={locale} dir={direction}>
+    <html lang={language} dir={direction}>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />

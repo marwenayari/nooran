@@ -8,6 +8,7 @@ import ImageAndAudioWithOptionsChallenge from '~/components/ImageAndAudioWithOpt
 import AudioWithOptionsChallenge from '~/components/AudioWithOptionsChallenge'
 import { useTranslation } from 'react-i18next'
 import { getSession } from '~/services/session.server'
+import { localeCookie } from '~/utils/cookies'
 
 export async function action({ request }: ActionFunctionArgs) {
   const { supabase } = createSupabaseServerClient(request)
@@ -49,14 +50,16 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const session = await getSession(request.headers.get('Cookie'))
+  const cookieHeader = request.headers.get('Cookie')
+  const locale = await localeCookie.parse(cookieHeader)
+  const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
   const lessonResult = await supabase
     .from('lessons')
     .select('id, title, courses(id, title), challenges(*, challenge_options(*))')
     .match({ id: Number(params['id']) })
     .single()
-  const lesson = toLessonDetails(lessonResult.data)
+  const lesson = toLessonDetails(lessonResult.data, locale)
   const challengeIds = lesson.challenges.map((challenge) => challenge.id)
 
   const progressResult = await supabase
