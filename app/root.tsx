@@ -1,4 +1,14 @@
-import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from '@remix-run/react'
+import {
+  isRouteErrorResponse,
+  json,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteError,
+  useRouteLoaderData
+} from '@remix-run/react'
 import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import { commitSession, getSession } from './services/session.server'
 
@@ -11,8 +21,7 @@ import SideMenu from './components/SideMenu'
 import { ShouldRevalidateFunction, useLocation } from 'react-router-dom'
 import { createSupabaseServerClient } from './services/upabase.server'
 import { ProfileProvider } from './context/ProfileContext'
-import { toProfile } from '~/models/Profile'
-import { toUserCourse } from '~/models/UserCourse'
+import { Profile, toProfile } from '~/models/Profile'
 import { localeCookie } from '~/utils/cookies'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -34,12 +43,12 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({}) => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+
   const cookieHeader = request.headers.get('Cookie')
   const locale = await localeCookie.parse(cookieHeader)
   const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
   const user = session.get('user')
-
   let profile = null
   const { data, error } = await supabase
     .from('profiles')
@@ -53,18 +62,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     session.set('profileId', profile?.id)
   }
 
-  const courseWithProgressResult = await supabase.rpc('get_courses_with_progress_percentage', {
-    user_id_param: session.get('user')?.id
-  })
-
-  // console.log('courseWithProgressResult.data', courseWithProgressResult.data)
-  let userCourses = []
-  if (!courseWithProgressResult.error) {
-    userCourses = courseWithProgressResult.data?.map((course: any) => toUserCourse(course, locale)) || []
-  }
-
   return json(
-    { userProfile: profile, user, locale, userCourses },
+    { userProfile: profile, user, locale },
     {
       headers: {
         'Set-Cookie': await commitSession(session)
@@ -73,8 +72,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   )
 }
 
+interface LoaderProps {
+  userProfile: Profile | null,
+  locale: string
+}
+
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { userProfile, locale, userCourses } = useRouteLoaderData('root')
+  const loaderData = useRouteLoaderData<LoaderProps | undefined>('root')
+  // if(!loaderData) return;
+  let userProfile: Profile | null = null
+  let locale: string = 'en'
+  if (loaderData) {
+    userProfile = loaderData.userProfile
+    locale = loaderData.locale
+  }
   const [direction, setDirection] = useState<string>(locale === 'ar' ? 'rtl' : 'ltr')
   const [language, setLanguage] = useState<string>(locale)
 
@@ -118,7 +129,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
                 >
                   <SideMenu />
                   <section className='h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll'>{children}</section>
-                  <SideBar userCourses={userCourses} />
+                  <SideBar />
                 </section>
               )}
             </ProfileProvider>
