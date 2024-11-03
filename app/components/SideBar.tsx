@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Form, Link, useFetcher, useLocation, useNavigate } from '@remix-run/react'
+import { Form, Link, useLocation, useNavigate } from '@remix-run/react'
 import { useProfile } from '~/context/ProfileContext'
 import { UserCourse } from '~/models/UserCourse'
 import { useEffect, useState } from 'react'
@@ -8,22 +8,19 @@ import { useEffect, useState } from 'react'
 
 export default function SideBar() {
   const [userCourses, setUserCourses] = useState<UserCourse[]>([])
-  // const data = useRouteLoaderData('routes/api.user-progress')
-  // console.log('data', data)
-  const fetcher = useFetcher()
+
+  const fetchUserProgress = async () => {
+    const response = await fetch(
+      '/api/user-progress'
+    )
+    const json = await response.json()
+    setUserCourses(json.userCourses)
+  }
 
   useEffect(() => {
-    // fetcher.submit({  }, { method: 'get', action: '/api/user-progress' })
-    fetch(
-      '/api/user-progress'
-    ).then(response => {
-      response.json().then(data => {
-        // console.log("data", data.userCourses)
-        setUserCourses(data.userCourses)
-      })
-    })
+    fetchUserProgress()
 
-  }, [fetcher])
+  }, [])
 
   const { t } = useTranslation('sidebar')
   const navigate = useNavigate()
