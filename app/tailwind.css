@@ -3,3 +3,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.arrow-back {
+    font-family: 'remixicon' !important;
+    font-style: normal;
+}
+.arrow-back:before {
+    content: "\ea60";
+}
+
+/* RTL variant */
+[dir="rtl"] .arrow-back:before {
+    content: "\ea6c";
+}

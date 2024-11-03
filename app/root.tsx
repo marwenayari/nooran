@@ -1,4 +1,4 @@
-import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
+import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from '@remix-run/react'
 import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import { commitSession, getSession } from './services/session.server'
 
@@ -11,8 +11,8 @@ import SideMenu from './components/SideMenu'
 import { ShouldRevalidateFunction, useLocation } from 'react-router-dom'
 import { createSupabaseServerClient } from './services/upabase.server'
 import { ProfileProvider } from './context/ProfileContext'
-import { Profile, toProfile } from '~/models/Profile'
-import { toUserCourse, UserCourse } from '~/models/UserCourse'
+import { toProfile } from '~/models/Profile'
+import { toUserCourse } from '~/models/UserCourse'
 import { localeCookie } from '~/utils/cookies'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .eq('user_id', user?.id ?? '')
     .single()
 
-  profile = toProfile(data)
+  profile = data ? toProfile(data) : null
 
   if (!error) {
     session.set('profileId', profile?.id)
@@ -74,12 +74,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { userProfile, locale, userCourses } = useLoaderData<{
-    userProfile: Profile
-    locale: string
-    user: any
-    userCourses: UserCourse[]
-  }>()
+  const { userProfile, locale, userCourses } = useRouteLoaderData('root')
   const [direction, setDirection] = useState<string>(locale === 'ar' ? 'rtl' : 'ltr')
   const [language, setLanguage] = useState<string>(locale)
 
