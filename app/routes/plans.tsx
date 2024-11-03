@@ -3,8 +3,8 @@ import { useNavigate } from '@remix-run/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const bgColors = ['bg-slate-200', 'bg-amber-300', 'bg-zinc-600']
-const buttonBgColors = ['bg-slate-100', 'bg-amber-200', 'bg-zinc-400']
+const bgColors = ['bg-slate-200', 'bg-amber-300', 'bg-zinc-600', 'bg-sky-200']
+const buttonBgColors = ['bg-slate-100', 'bg-amber-200', 'bg-zinc-400', 'bg-sky-100']
 const colors = ['text-zinc-700', 'text-zinc-700', 'text-white']
 const plans = [
   {
@@ -95,6 +95,40 @@ const plans = [
         active: true
       }
     ]
+  },
+  //add sponsor plan
+  {
+    title: 'الراعي', // Arabic primary
+    title_en: 'Sponsor',
+    price: 30,
+    icon: 'ri-hand-heart-fill',
+    features: [
+      {
+        title: 'عدد غير محدود من المستخدمين', // Arabic primary
+        title_en: 'Unlimited Users',
+        active: true
+      },
+      {
+        title: 'دعم المؤسسة', // Arabic primary
+        title_en: 'Enterprise Support',
+        active: true
+      },
+      {
+        title: 'تخصيص المؤسسة', // Arabic primary
+        title_en: 'Enterprise Customization',
+        active: true
+      },
+      {
+        title: 'عدد غير محدود من الاختبارات', // Arabic primary
+        title_en: 'Unlimited Quizzes',
+        active: true
+      },
+      {
+        title: 'عدد غير محدود من القصص', // Arabic primary
+        title_en: 'Unlimited Stories',
+        active: true
+      }
+    ]
   }
 ]
 
@@ -121,11 +155,11 @@ const PlansPage = () => {
           className='text-3xl text-slate-500 hover:opacity-75 transition cursor-pointer ri-close-large-line'
         ></i>
       </div>
-      <div className='py-8 w-full flex justify-between flex-grow max-w-[768px] mx-auto gap-4'>
+      <div className='py-8 w-full flex justify-between flex-grow max-w-[968px] mx-auto gap-4'>
         {plans.map((plan, idx) => (
           <div
             key={plan.title_en}
-            className={`${bgColors[idx]} ${colors[idx]} w-1/3 flex flex-col p-2 justify-between rounded-lg`}
+            className={`${bgColors[idx]} ${colors[idx]} w-1/4 flex flex-col p-2 justify-between rounded-lg`}
           >
             <div className='flex justify-between p-2 items-center'>
               <i className={`ri-1x ${plan.icon}`}></i>
