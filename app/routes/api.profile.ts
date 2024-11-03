@@ -11,21 +11,35 @@ export async function action({ request }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'))
 
   if(request.method === 'PATCH') {
-    if (formaData.has('lang') && session.has('user')) {
-      await supabase
-        .from('profiles')
+    if (formaData.has('lang')) {
+      if (session.has('user')) {
+        await supabase
+          .from('profiles')
+          .update({
+            locale: formaData.get('lang')
+          })
+          .match({ user_id: session.get('user')['id'] })
+      }
+
+      return json(
+        { lang: formaData.get('lang') },
+        {
+          headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')), 'Clear-Site-Data': '"cache"' }
+        }
+      )
+    }
+    if (formaData.has('plan_id') && session.has('user')) {
+      const result = await supabase
+        .from('profiles, plans(*)')
         .update({
-          locale: formaData.get('lang')
+          plan: formaData.get('plan_id')
         })
         .match({ user_id: session.get('user')['id'] })
+      return json(
+        { result: result }
+      )
     }
 
-    return json(
-      { lang: formaData.get('lang') },
-      {
-        headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')), 'Clear-Site-Data': '"cache"' }
-      }
-    )
   }
 
 }

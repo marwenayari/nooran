@@ -1,32 +1,7 @@
-import { Form, json } from '@remix-run/react'
+import { Form } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '~/context/ProfileContext'
-import type { ActionFunctionArgs } from '@remix-run/node'
-import { createSupabaseServerClient } from '~/services/upabase.server'
-import { getSession } from '~/services/session.server'
-import { localeCookie } from '~/utils/cookies'
 
-export async function action({ request }: ActionFunctionArgs) {
-  const { supabase } = createSupabaseServerClient(request)
-  const formaData = await request.formData()
-  const session = await getSession(request.headers.get('Cookie'))
-
-  if (formaData.has('lang') && session.has('user')) {
-    await supabase
-      .from('profiles')
-      .update({
-        locale: formaData.get('lang')
-      })
-      .match({ user_id: session.get('user')['id'] })
-  }
-
-  return json(
-    { lang: formaData.get('lang') },
-    {
-      headers: { 'Set-Cookie': await localeCookie.serialize(formaData.get('lang')), 'Clear-Site-Data': '"cache"' }
-    }
-  )
-}
 
 const ProfilePage = () => {
   const { t } = useTranslation('profile')

@@ -6,18 +6,34 @@ export interface Profile {
   avatarUrl: string
   displayName: string
   bio: string
-  age: number
+  age: number,
+  plan: string
 }
 
 export function toProfile(json: any) {
-  return {
+  console.log('toProfile', toProfile)
+  let data = {
     id: json?.id,
     locale: json?.locale || 'en',
     userId: json?.user_id || '',
     email: json?.email || '',
-    avatarUrl: json?.avatar_url || '',
+    avatarUrl: json?.avatar_url || '/profile/default.jpg',
     displayName: json?.display_name || '',
     bio: json?.bio || '',
-    age: json?.locale || 0
+    age: json?.locale || 0,
+    plan: json?.plan?.key || 'basic'
   }
+  console.log('toProfile data', data )
+  return data;
+  // return {
+  //   id: json?.id,
+  //   locale: json?.locale || 'en',
+  //   userId: json?.user_id || '',
+  //   email: json?.email || '',
+  //   avatarUrl: json?.avatar_url || '/profile/default.jpg',
+  //   displayName: json?.display_name || '',
+  //   bio: json?.bio || '',
+  //   age: json?.locale || 0,
+  //   // plan: json?.plan?.key || 'basic'
+  // }
 }
