@@ -88,7 +88,7 @@ const CoursePage = () => {
       >
         <div className=' flex items-center uppercase opacity-70'>
           <Link to={`/`}>
-            <i className='text-xl ri-arrow-left-line mr-2 my-2'></i>
+            <i className='text-xl arrow-back mr-2 my-2'></i>
           </Link>
           {course.title}
         </div>

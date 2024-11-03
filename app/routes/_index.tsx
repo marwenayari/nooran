@@ -51,7 +51,6 @@ export default function Index() {
   }
 
   const courses = useLoaderData<CourseSummary[]>()
-  console.log('renderd')
 
   return (
     <div>
