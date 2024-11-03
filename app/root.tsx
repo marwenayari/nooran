@@ -13,6 +13,7 @@ import { ProfileProvider } from './context/ProfileContext'
 import { Profile, toProfile } from '~/models/Profile'
 import { localeCookie } from '~/utils/cookies'
 import { Suspense, useEffect, useState } from 'react'
+import i18next from '~/i18n/i18next.server'
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -36,6 +37,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookieHeader = request.headers.get('Cookie')
   const locale = await localeCookie.parse(cookieHeader)
   // i18next.
+
   const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
   const user = session.get('user')

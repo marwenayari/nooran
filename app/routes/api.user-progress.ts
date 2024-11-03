@@ -6,7 +6,6 @@ import { json } from '@remix-run/react'
 import { localeCookie } from '~/utils/cookies'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log("user progress")
   const cookieHeader = request.headers.get('Cookie')
   const locale = await localeCookie.parse(cookieHeader)
   const session = await getSession(cookieHeader)
