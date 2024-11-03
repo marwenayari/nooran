@@ -1,12 +1,4 @@
-import {
-  Link,
-  NavLink,
-  ShouldRevalidateFunction,
-  useFetcher,
-  useLoaderData,
-  useNavigate,
-  useSearchParams
-} from '@remix-run/react'
+import { NavLink, ShouldRevalidateFunction, useFetcher, useLoaderData, useSearchParams } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { ActionFunction, json, LoaderFunctionArgs, redirect } from '@remix-run/node'
 import { loadStory } from '~/services/watsonx.server'

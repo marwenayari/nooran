@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function SideBar({ userCourses }: Props) {
+
   const { t } = useTranslation('sidebar')
   const navigate = useNavigate()
   const { profile } = useProfile()
