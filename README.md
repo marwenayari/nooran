@@ -23,7 +23,3 @@ Then run the app in production mode:
 ```sh
 npm start
 ```
-
-## Styling
-
-[Tailwind CSS](https://tailwindcss.com/) already configured for a simple start.

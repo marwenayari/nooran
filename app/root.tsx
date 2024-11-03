@@ -44,7 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let profile = null
   const { data, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select('*, plans(*)')
     .eq('user_id', user?.id ?? '')
     .single()
 
