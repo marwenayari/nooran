@@ -1,17 +1,6 @@
-import {
-  isRouteErrorResponse,
-  json,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useRouteError,
-  useRouteLoaderData
-} from '@remix-run/react'
+import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from '@remix-run/react'
 import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import { commitSession, getSession } from './services/session.server'
-
 import 'remixicon/fonts/remixicon.css'
 import './tailwind.css'
 import './style.css'
@@ -46,6 +35,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const cookieHeader = request.headers.get('Cookie')
   const locale = await localeCookie.parse(cookieHeader)
+  // i18next.
   const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
   const user = session.get('user')
@@ -90,8 +80,10 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [language, setLanguage] = useState<string>(locale)
 
   const { i18n } = useTranslation()
+  // useChangeLanguage(locale)
 
   useEffect(() => {
+    // i18n.changeLanguage(language)
     i18n.on('languageChanged', () => {
       setDirection(i18n.dir())
       setLanguage(i18n.language)
