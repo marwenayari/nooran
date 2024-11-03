@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction } from '@remix-run/node'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, useRouteLoaderData } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { CourseSummary, toCourseSummary } from '~/models/CourseSummary'
@@ -50,7 +50,7 @@ export default function Index() {
     selected = key
   }
 
-  const courses = useLoaderData<CourseSummary[]>()
+  const courses = useRouteLoaderData<CourseSummary[]>("routes/_index")
 
   return (
     <div>

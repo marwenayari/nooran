@@ -10,7 +10,7 @@ export default function LanguageSwitcher() {
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang)
-    fetcher.submit({ lang }, { method: 'patch', action: '/profile' })
+    fetcher.submit({ lang }, { method: 'patch', action: '/api/profile' })
   }
 
   useEffect(() => {

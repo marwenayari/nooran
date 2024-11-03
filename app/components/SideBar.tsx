@@ -1,14 +1,29 @@
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Form, Link, useLocation, useNavigate } from '@remix-run/react'
+import { Form, Link, useFetcher, useLocation, useNavigate } from '@remix-run/react'
 import { useProfile } from '~/context/ProfileContext'
 import { UserCourse } from '~/models/UserCourse'
+import { useEffect, useState } from 'react'
 
-interface Props {
-  userCourses: UserCourse[]
-}
 
-export default function SideBar({ userCourses }: Props) {
+export default function SideBar() {
+  const [userCourses, setUserCourses] = useState<UserCourse[]>([])
+  // const data = useRouteLoaderData('routes/api.user-progress')
+  // console.log('data', data)
+  const fetcher = useFetcher()
+
+  useEffect(() => {
+    // fetcher.submit({  }, { method: 'get', action: '/api/user-progress' })
+    fetch(
+      '/api/user-progress'
+    ).then(response => {
+      response.json().then(data => {
+        // console.log("data", data.userCourses)
+        setUserCourses(data.userCourses)
+      })
+    })
+
+  }, [fetcher])
 
   const { t } = useTranslation('sidebar')
   const navigate = useNavigate()
@@ -72,7 +87,7 @@ export default function SideBar({ userCourses }: Props) {
       )}
       <LanguageSwitcher />
       {!isGuest && (
-        <Form method='post' action='/logout'>
+        <Form method="post" action="/api/logout">
           <button className='mt-2'>{t('common:logout')}</button>
         </Form>
       )}
