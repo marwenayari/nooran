@@ -35,8 +35,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({}) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const cookieHeader = request.headers.get('Cookie')
-  const locale = await localeCookie.parse(cookieHeader)
-  // i18next.
 
   const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
@@ -50,6 +48,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   profile = data ? toProfile(data) : null
 
+  const locale = await localeCookie.parse(cookieHeader) || profile?.locale || 'en'
+
   if (!error) {
     session.set('profileId', profile?.id)
   }
@@ -57,9 +57,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json(
     { userProfile: profile, user, locale },
     {
-      headers: {
-        'Set-Cookie': await commitSession(session)
-      }
+      headers: [
+        ['Set-Cookie', await commitSession(session)],
+        ['Set-Cookie', await localeCookie.serialize(locale)]
+      ]
     }
   )
 }

@@ -83,11 +83,12 @@ export const action = async ({ request }) => {
     // }
   } else {
     session.set('user', signInData.user)
+    const profile = await getProfile(signInData.user?.id ?? '')
     return json(
       {
         success: true,
         error: '',
-        profile: await getProfile(signInData.user?.id ?? '')
+        profile: profile
       },
       {
         headers: { 'Set-Cookie': await commitSession(session) }
@@ -103,7 +104,6 @@ export default function Auth() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('action data', actionData)
     if (actionData && actionData.profile) {
       updateProfile(actionData.profile)
       navigate('/')
