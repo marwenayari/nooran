@@ -27,8 +27,17 @@ export default function SideBar() {
   const { profile } = useProfile()
 
   let avatar: string = '/profile/default.jpg'
+  const borderColors: any = {
+    basic: 'border-sky-200',
+    sponsor: 'border-zinc-600',
+    pro: 'border-amber-300',
+    enterprise: 'border-slate-200'
+  }
+  let borderColor = borderColors.basic
+
   if (profile) {
     avatar = profile.avatarUrl
+    borderColor = borderColors[profile.plan] || borderColors.basic;
   }
   // const isGuest = !profile?.userId
 
@@ -55,7 +64,7 @@ export default function SideBar() {
           <i className='text-2xl ri-settings-4-line'></i>
         </span>
       </div>
-      <img className='rounded-full w-20 h-20 border-solid border-4 border-beige mb-2' src={avatar} alt='user avatar' />
+      <img className={`rounded-full w-20 h-20 border-solid border-4 mb-2 ${borderColor}`} src={avatar} alt='user avatar' />
       {!profile && (
         <>
           <h3 className="text-2xl mb-2">{t('guest')}</h3>

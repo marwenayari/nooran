@@ -27,11 +27,12 @@ export async function action({ request }: ActionFunctionArgs) {
         }
       )
     }
+    console.log('plan_id', formaData.get('plan_id'), session.get('user')['id'])
     if (formaData.has('plan_id') && session.has('user')) {
       const result = await supabase
-        .from('profiles, plans(*)')
+        .from('profiles')
         .update({
-          plan: formaData.get('plan_id')
+          plan_id: formaData.get('plan_id')
         })
         .match({ user_id: session.get('user')['id'] })
       return json(

@@ -125,7 +125,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { data } = await supabase
     .from('plans')
     .select('*')
-  console.log('data', data)
+
   return json({ plans: data?.map(json => toPlan(json, locale)) })
 }
 

@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   profile = data ? toProfile(data) : null
 
-  const locale = await localeCookie.parse(cookieHeader) || profile?.locale || 'en'
+  const locale = profile?.locale || await localeCookie.parse(cookieHeader) || 'en'
 
   if (!error) {
     session.set('profileId', profile?.id)
@@ -71,7 +71,6 @@ interface LoaderProps {
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const loaderData = useRouteLoaderData<LoaderProps | undefined>('root')
-  // if(!loaderData) return;
   let userProfile: Profile | null = null
   let locale: string = 'en'
   if (loaderData) {
@@ -82,7 +81,6 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [language, setLanguage] = useState<string>(locale)
 
   const { i18n } = useTranslation()
-  // useChangeLanguage(locale)
 
   useEffect(() => {
     // i18n.changeLanguage(language)
