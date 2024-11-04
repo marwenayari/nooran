@@ -5,13 +5,21 @@ import { useProfile } from '~/context/ProfileContext'
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation()
-  const fetcher = useFetcher()
-  const { profile } = useProfile()
+  const fetcher = useFetcher<{lang: string}>()
+  const { profile, updateProfile } = useProfile()
 
   const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang)
     fetcher.submit({ lang }, { method: 'patch', action: '/api/profile' })
   }
+
+  useEffect(() => {
+    if(profile && fetcher.data && fetcher.data.lang) {
+      updateProfile({
+        ...profile,
+        locale: fetcher.data.lang
+      })
+    }
+  }, [fetcher.data])
 
   useEffect(() => {
     if (profile && profile?.locale) {
