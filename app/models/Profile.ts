@@ -11,7 +11,6 @@ export interface Profile {
 }
 
 export function toProfile(json: any) {
-  console.log('toProfile', toProfile)
   let data = {
     id: json?.id,
     locale: json?.locale || 'en',
@@ -23,7 +22,6 @@ export function toProfile(json: any) {
     age: json?.locale || 0,
     plan: json?.plan?.key || 'basic'
   }
-  console.log('toProfile data', data )
   return data;
   // return {
   //   id: json?.id,

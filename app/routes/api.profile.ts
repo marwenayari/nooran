@@ -5,7 +5,6 @@ import { json } from '@remix-run/react'
 import { localeCookie } from '~/utils/cookies'
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log('action called', request.method)
   const { supabase } = createSupabaseServerClient(request)
   const formaData = await request.formData()
   const session = await getSession(request.headers.get('Cookie'))

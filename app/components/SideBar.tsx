@@ -25,7 +25,6 @@ export default function SideBar() {
   const { t } = useTranslation('sidebar')
   const navigate = useNavigate()
   const { profile } = useProfile()
-  console.log('profile', profile)
 
   let avatar: string = '/profile/default.jpg'
   if (profile) {

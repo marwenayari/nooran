@@ -6,7 +6,6 @@ type ProfileContextType = {
 }
 const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType)
 export const useProfile = () => useContext(ProfileContext)
-export default ProfileContext
 
 type ProfileProviderProps = {
   children: ReactNode
@@ -15,7 +14,6 @@ type ProfileProviderProps = {
 export const ProfileProvider = ({ children, userProfile }: ProfileProviderProps) => {
   const [profile, setProfile] = useState<Profile | null>(userProfile)
   const updateProfile = (profile: Profile | null) => {
-    console.log('updateProfile called', profile)
     setProfile(profile)
   }
   const contextValue = useMemo(
