@@ -5,21 +5,17 @@ import { useProfile } from '~/context/ProfileContext'
 import { UserCourse } from '~/models/UserCourse'
 import { useEffect, useState } from 'react'
 
-
 export default function SideBar() {
   const [userCourses, setUserCourses] = useState<UserCourse[]>([])
 
   const fetchUserProgress = async () => {
-    const response = await fetch(
-      '/api/user-progress'
-    )
+    const response = await fetch('/api/user-progress')
     const json = await response.json()
     setUserCourses(json.userCourses)
   }
 
   useEffect(() => {
     fetchUserProgress()
-
   }, [])
 
   const { t } = useTranslation('sidebar')
@@ -28,16 +24,16 @@ export default function SideBar() {
 
   let avatar: string = '/profile/default.jpg'
   const borderColors: any = {
-    basic: 'border-sky-200',
-    sponsor: 'border-zinc-600',
+    patron: 'border-sky-200',
+    enterprise: 'border-zinc-600',
     pro: 'border-amber-300',
-    enterprise: 'border-slate-200'
+    basic: 'border-slate-200'
   }
   let borderColor = borderColors.basic
 
   if (profile) {
     avatar = profile.avatarUrl
-    borderColor = borderColors[profile.plan] || borderColors.basic;
+    borderColor = borderColors[profile.plan] || borderColors.basic
   }
   // const isGuest = !profile?.userId
 
@@ -64,59 +60,59 @@ export default function SideBar() {
           <i className='text-2xl ri-settings-4-line'></i>
         </span>
       </div>
-      <img className={`rounded-full w-20 h-20 border-solid border-4 mb-2 ${borderColor}`} src={avatar} alt='user avatar' />
+      <img
+        className={`rounded-full w-20 h-20 border-solid border-4 mb-2 ${borderColor}`}
+        src={avatar}
+        alt='user avatar'
+      />
       {!profile && (
         <>
-          <h3 className="text-2xl mb-2">{t('guest')}</h3>
+          <h3 className='text-2xl mb-2'>{t('guest')}</h3>
           <Link
             to={'/auth'}
-            prefetch="intent"
-            className="
+            prefetch='intent'
+            className='
           text-xl text-blue-400 font-bold uppercase mb-4
-          border-solid border-2 border-blue-400 rounded-md px-2"
+          border-solid border-2 border-blue-400 rounded-md px-2'
           >
             {t('common:sign-in')}
           </Link>
         </>
-
-
       )}
       <LanguageSwitcher />
       {profile && (
         <>
-          <h3 className="text-2xl flex gap-1">
+          <h3 className='text-2xl flex gap-1'>
             <button
               onClick={() => {
                 navigate('/profile')
               }}
-              className="ri-1 ri-edit-circle-fill cursor-pointer text-zinc-700"
+              className='ri-1 ri-edit-circle-fill cursor-pointer text-zinc-700'
             ></button>
             {profile.displayName}
             <button
               onClick={() => {
                 navigate('/plans')
               }}
-              className="ri-1 text-amber-500 ri-vip-crown-fill cursor-pointer"
+              className='ri-1 text-amber-500 ri-vip-crown-fill cursor-pointer'
             ></button>
           </h3>
-          <Form method="post" action="/api/logout">
+          <Form method='post' action='/api/logout'>
             <button className='mt-2'>{t('common:logout')}</button>
           </Form>
         </>
+      )}
 
-
-)}
-
-  <section className="activity-box w-full h-40 bg-white rounded-xl p-4 my-4">
-    <div className="flex justify-between w-full h-10">
-      <h4 className="text-lg">{t('activity')}</h4>
-      <span>
-            <i className="ri-thumb-up-line mx-1"></i>
-        {t('great-job')}
+      <section className='activity-box w-full h-40 bg-white rounded-xl p-4 my-4'>
+        <div className='flex justify-between w-full h-10'>
+          <h4 className='text-lg'>{t('activity')}</h4>
+          <span>
+            <i className='ri-thumb-up-line mx-1'></i>
+            {t('great-job')}
           </span>
-    </div>
-    <hr />
-    <div className='my-2'>
+        </div>
+        <hr />
+        <div className='my-2'>
           <div className='flex justify-between'>
             <i className='ri-macbook-line text-xl px-1'></i>
             <span>5 {t('lessons-completed')}</span>

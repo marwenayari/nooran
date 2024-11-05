@@ -14,6 +14,12 @@ body {
   }
 }
 
+@media only screen and (max-width: 600px) {
+  body {
+    background-image: url('/img/bg-mobile.png');
+  }
+}
+
 ::-webkit-scrollbar {
   width: 0;
   background: transparent;
