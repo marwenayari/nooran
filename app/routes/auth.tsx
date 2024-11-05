@@ -27,15 +27,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export const action = async ({ request }) => {
-  const getProfile = async (userId: string): Promise<Profile> => {
+  const session = await getSession(request.headers.get('Cookie'))
+
+  const getProfile = async (userId: string): Promise<Profile | null> => {
     let profile = null
     const { data, error } = await supabase.from('profiles').select('*').eq('user_id', userId).single()
 
     if (!error) {
       profile = data
       session.set('profileId', profile?.id)
+      return toProfile(data)
     }
-    return toProfile(data)
+    return null;
   }
 
   const formData = await request.formData()
@@ -51,48 +54,47 @@ export const action = async ({ request }) => {
   })
 
   if (signInError) {
+    return json({ success: false, error: signInError.message, profile: null })
     // If sign-in fails because the user doesn't exist, attempt sign-up
-    if (signInError.message.includes('Invalid login credentials')) {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password
-      })
-
-      if (signUpError) {
-        return json({ success: false, error: signUpError.message })
+    // if (signInError.code === 'invalid_credentials') {
+    //   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    //     email,
+    //     password
+    //   })
+    //
+    //   if (signUpError) {
+    //     return json({ success: false, error: signUpError.message })
+    //   }
+    //
+    //
+    //   session.set('user', signUpData.user)
+    //   return json(
+    //     {
+    //       success: true,
+    //       error: '',
+    //       profile: await getProfile(signUpData.user?.id ?? '')
+    //     },
+    //     {
+    //       headers: { 'Set-Cookie': await commitSession(session) }
+    //     }
+    //   )
+    // } else {
+    //   return json({ success: false, error: signInError.message, profile: null })
+    // }
+  } else {
+    session.set('user', signInData.user)
+    const profile = await getProfile(signInData.user?.id ?? '')
+    return json(
+      {
+        success: true,
+        error: '',
+        profile: profile
+      },
+      {
+        headers: { 'Set-Cookie': await commitSession(session) }
       }
-
-      const session = await getSession(request.headers.get('Cookie'))
-      session.set('user', signUpData.user)
-
-      return json(
-        {
-          success: true,
-          error: '',
-          profile: await getProfile(signUpData.user?.id ?? '')
-        },
-        {
-          headers: { 'Set-Cookie': await commitSession(session) }
-        }
-      )
-    } else {
-      return json({ success: false, error: signInError.message, profile: null })
-    }
+    )
   }
-
-  const session = await getSession(request.headers.get('Cookie'))
-  session.set('user', signInData.user)
-
-  return json(
-    {
-      success: true,
-      error: '',
-      profile: await getProfile(signInData.user?.id ?? '')
-    },
-    {
-      headers: { 'Set-Cookie': await commitSession(session) }
-    }
-  )
 }
 
 export default function Auth() {
@@ -102,7 +104,7 @@ export default function Auth() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (actionData && actionData.profile?.id) {
+    if (actionData && actionData.profile) {
       updateProfile(actionData.profile)
       navigate('/')
     }

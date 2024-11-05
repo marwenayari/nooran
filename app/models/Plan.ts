@@ -23,7 +23,7 @@ export function toFeature(json: any, locale: string): Feature {
 export function toPlan(json: any, locale: string): Plan {
   return {
     id: json?.id || 0,
-    key: json?.icon || 'basic',
+    key: json?.key || 'basic',
     icon: json?.icon || '',
     title: translationsToString(json.title, locale),
     features: json?.features['features'].map((feature: any) => toFeature(feature, locale)) || [],

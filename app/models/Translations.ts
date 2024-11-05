@@ -3,5 +3,6 @@ export interface Translations {
 }
 
 export function translationsToString(translations: Translations, locale: string) {
-  return translations && translations[locale] ? translations[locale] : ''
+  const lang = locale || 'en'
+  return translations && translations[lang] ? translations[lang] : ''
 }

@@ -13,7 +13,6 @@ import { ProfileProvider } from './context/ProfileContext'
 import { Profile, toProfile } from '~/models/Profile'
 import { localeCookie } from '~/utils/cookies'
 import { Suspense, useEffect, useState } from 'react'
-import i18next from '~/i18n/i18next.server'
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -35,8 +34,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({}) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const cookieHeader = request.headers.get('Cookie')
-  const locale = await localeCookie.parse(cookieHeader)
-  // i18next.
 
   const session = await getSession(cookieHeader)
   const { supabase } = createSupabaseServerClient(request)
@@ -50,6 +47,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   profile = data ? toProfile(data) : null
 
+  const locale = profile?.locale || await localeCookie.parse(cookieHeader) || 'en'
+
   if (!error) {
     session.set('profileId', profile?.id)
   }
@@ -57,9 +56,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json(
     { userProfile: profile, user, locale },
     {
-      headers: {
-        'Set-Cookie': await commitSession(session)
-      }
+      headers: [
+        ['Set-Cookie', await commitSession(session)],
+        ['Set-Cookie', await localeCookie.serialize(locale)]
+      ]
     }
   )
 }
@@ -71,7 +71,6 @@ interface LoaderProps {
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const loaderData = useRouteLoaderData<LoaderProps | undefined>('root')
-  // if(!loaderData) return;
   let userProfile: Profile | null = null
   let locale: string = 'en'
   if (loaderData) {
@@ -82,7 +81,6 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [language, setLanguage] = useState<string>(locale)
 
   const { i18n } = useTranslation()
-  // useChangeLanguage(locale)
 
   useEffect(() => {
     // i18n.changeLanguage(language)

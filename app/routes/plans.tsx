@@ -7,9 +7,28 @@ import { createSupabaseServerClient } from '~/services/upabase.server'
 import { Plan, toPlan } from '~/models/Plan'
 import { useProfile } from '~/context/ProfileContext'
 
-const bgColors = ['bg-slate-200', 'bg-amber-300', 'bg-zinc-600', 'bg-sky-200']
-const buttonBgColors = ['bg-slate-100', 'bg-amber-200', 'bg-zinc-400', 'bg-sky-100']
-const colors = ['text-zinc-700', 'text-zinc-700', 'text-white']
+const bgColors: any = {
+  basic: 'bg-sky-200',
+  sponsor: 'bg-zinc-600',
+  pro: 'bg-amber-300',
+  enterprise: 'bg-slate-200'
+}
+const buttonBgColors: any = {
+  basic: 'bg-sky-100',
+  sponsor: 'bg-zinc-700',
+  pro: 'bg-amber-200',
+  enterprise: 'bg-slate-100'
+}
+
+const colors: any = {
+  basic: 'text-zinc-700',
+  sponsor: 'text-white',
+  pro: 'text-zinc-700',
+  enterprise: 'text-zinc-700'
+}
+
+// const buttonBgColors = ['bg-slate-100', 'bg-amber-200', 'bg-zinc-400', 'bg-sky-100']
+// const colors = ['text-zinc-700', 'text-zinc-700', 'text-white']
 // const plans = [
 //   {
 //     title: 'أساسي', // Arabic primary
@@ -106,7 +125,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { data } = await supabase
     .from('plans')
     .select('*')
-  console.log('data', data)
+
   return json({ plans: data?.map(json => toPlan(json, locale)) })
 }
 
@@ -139,10 +158,10 @@ const PlansPage = () => {
         ></i>
       </div>
       <div className='py-8 w-full flex justify-between flex-grow max-w-[968px] mx-auto gap-4'>
-        {plans.map((plan, idx) => (
+        {plans.map((plan) => (
           <div
             key={plan.key}
-            className={`${bgColors[idx]} ${colors[idx]} w-1/4 flex flex-col p-2 justify-between rounded-lg`}
+            className={`${bgColors[plan.key]} ${colors[plan.key]} w-1/4 flex flex-col p-2 justify-between rounded-lg`}
           >
             <div className='flex justify-between p-2 items-center'>
               <i className={`ri-1x ${plan.icon}`}></i>
@@ -162,7 +181,7 @@ const PlansPage = () => {
               ))}
             </div>
             <button
-              className={`p-4 w-full ${buttonBgColors[idx]} opacity-100 hover:opacity-80 rounded-md text-center my-2 cursor-pointer`}
+              className={`p-4 w-full ${buttonBgColors[plan.key]} ${colors[plan.key]}  opacity-100 hover:opacity-80 rounded-md text-center my-2 cursor-pointer`}
               onClick={() => setSelectedPlan(plan)}
             >
               {t('choosePlan')}
@@ -170,7 +189,7 @@ const PlansPage = () => {
           </div>
         ))}
       </div>
-      <div className={` w-full py-4 px-10`}>
+      <div className={` w-full py-4 px-10 ${selectedPlan ? bgColors[selectedPlan.key] : ''}`}>
         <div className='max-w-[1140px] mx-auto flex justify-end'>
           <button
             disabled={selectedPlan === null}
