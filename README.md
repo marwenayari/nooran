@@ -1,6 +1,7 @@
 # Welcome to Nooran!
 
 Nooran is a web application made on the Allam Challenge 2024.
+Learn arabic with AI.
 
 ## Development
 
