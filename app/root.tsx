@@ -32,7 +32,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({}) => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-
   const cookieHeader = request.headers.get('Cookie')
 
   const session = await getSession(cookieHeader)
@@ -47,7 +46,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   profile = data ? toProfile(data) : null
 
-  const locale = profile?.locale || await localeCookie.parse(cookieHeader) || 'en'
+  const locale = profile?.locale || (await localeCookie.parse(cookieHeader)) || 'en'
 
   if (!error) {
     session.set('profileId', profile?.id)
@@ -65,7 +64,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 interface LoaderProps {
-  userProfile: Profile | null,
+  userProfile: Profile | null
   locale: string
 }
 
@@ -87,7 +86,6 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
     i18n.on('languageChanged', () => {
       setDirection(i18n.dir())
       setLanguage(i18n.language)
-
     })
   }, [i18n])
 
@@ -108,7 +106,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
         <Suspense fallback={<div>Loading...</div>}>
           {isAuthPage ? (
             <ProfileProvider userProfile={userProfile}>
-              <main className='flex items-center justify-center h-screen'>{children}</main>
+              <main className='flex items-center justify-center h-dvh'>{children}</main>
             </ProfileProvider>
           ) : (
             <ProfileProvider userProfile={userProfile}>
@@ -117,7 +115,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
                 <section
                   className='
             flex flex-col-reverse md:flex-row lg:flex-row items-center
-            w-screen h-screen p-4 md:p-8 lg:p-8 overflow-hidden'
+            w-screen h-dvh p-4 md:p-8 lg:p-8 overflow-hidden'
                 >
                   <SideMenu />
                   <section className='h-full w-full pb-4 md:p-8 lg:p-8 overflow-y-scroll'>{children}</section>
