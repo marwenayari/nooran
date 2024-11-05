@@ -5,7 +5,6 @@ import { json } from '@remix-run/react'
 import { localeCookie } from '~/utils/cookies'
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log('action called', request.method)
   const { supabase } = createSupabaseServerClient(request)
   const formaData = await request.formData()
   const session = await getSession(request.headers.get('Cookie'))
@@ -28,11 +27,12 @@ export async function action({ request }: ActionFunctionArgs) {
         }
       )
     }
+    console.log('plan_id', formaData.get('plan_id'), session.get('user')['id'])
     if (formaData.has('plan_id') && session.has('user')) {
       const result = await supabase
-        .from('profiles, plans(*)')
+        .from('profiles')
         .update({
-          plan: formaData.get('plan_id')
+          plan_id: formaData.get('plan_id')
         })
         .match({ user_id: session.get('user')['id'] })
       return json(

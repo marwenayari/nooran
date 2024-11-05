@@ -11,8 +11,7 @@ export interface Profile {
 }
 
 export function toProfile(json: any) {
-  console.log('toProfile', toProfile)
-  let data = {
+  return {
     id: json?.id,
     locale: json?.locale || 'en',
     userId: json?.user_id || '',
@@ -21,19 +20,6 @@ export function toProfile(json: any) {
     displayName: json?.display_name || '',
     bio: json?.bio || '',
     age: json?.locale || 0,
-    plan: json?.plan?.key || 'basic'
+    plan: json?.plans?.key || 'basic'
   }
-  console.log('toProfile data', data )
-  return data;
-  // return {
-  //   id: json?.id,
-  //   locale: json?.locale || 'en',
-  //   userId: json?.user_id || '',
-  //   email: json?.email || '',
-  //   avatarUrl: json?.avatar_url || '/profile/default.jpg',
-  //   displayName: json?.display_name || '',
-  //   bio: json?.bio || '',
-  //   age: json?.locale || 0,
-  //   // plan: json?.plan?.key || 'basic'
-  // }
 }
