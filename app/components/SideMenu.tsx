@@ -32,13 +32,13 @@ export default function SideMenu() {
       </section>
       <section>
         <Link
-          to='/donate'
+          to='/patron'
           prefetch='viewport'
           className='flex bg-white dark:bg-gray-500 rounded-full items-center justify-center w-10 h-10 my-2'
         >
           {/* <i className='text-xl ri-hand-heart-line'></i> */}
           {/* <i className='text-xl ri-drinks-line'></i> */}
-          <i className='text-xl ri-drinks-fill'></i>
+          <i className='text-xl ri-patreon-fill'></i>
           {/* <i className='text-xl ri-hand-heart-fill'></i> */}
         </Link>
       </section>

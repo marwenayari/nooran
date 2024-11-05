@@ -83,8 +83,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.error('Error fetching other stories:', otherStoriesError.message)
     return json({ error: 'Failed to load other stories' }, { status: 500 })
   }
-
-  const storiesForYou = otherStories.filter((story) => arraysHaveCommonElements(story.keywords, userKeywords))
+  const storiesForYou = otherStories
+  // const storiesForYou = otherStories.filter((story) => arraysHaveCommonElements(story.keywords, userKeywords))
 
   return json({ stories, storiesForYou })
 }

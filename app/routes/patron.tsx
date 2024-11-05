@@ -2,14 +2,15 @@ import { Form } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '~/context/ProfileContext'
 
-const DonatePage = () => {
-  const { t } = useTranslation('donate')
+const PatronPage = () => {
+  const { t } = useTranslation('patron')
 
   return (
-    <div className='donate-page'>
+    <div className='patron-page'>
       <h1 className='text-3xl'>{t('title')}</h1>
+      <p>{t('description')}</p>
     </div>
   )
 }
 
-export default DonatePage
+export default PatronPage
