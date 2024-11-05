@@ -1,7 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { commitSession, getSession } from '~/services/session.server'
-import { Form, useActionData, useNavigate } from '@remix-run/react'
+import { Form, Link, useActionData, useNavigate } from '@remix-run/react'
 import { createSupabaseServerClient } from '~/services/upabase.server'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '~/components/LanguageSwitcher'
@@ -28,6 +28,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
+  const { supabase } = createSupabaseServerClient(request)
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
     let profile = null
@@ -45,7 +46,6 @@ export const action = async ({ request }) => {
   const email = formData.get('email')
   const password = formData.get('password')
 
-  const { supabase } = createSupabaseServerClient(request)
 
   // First, try to sign in the user
   const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
@@ -153,9 +153,9 @@ export default function Auth() {
           <div className='flex flex-col items-center justify-center h-20'>
             <span className='mb-2 text-slate-500'>{t('or-sign-in-with')}</span>
             <div className='flex justify-between w-1/2 '>
-              <i className='ri-google-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10'></i>
-              <i className='ri-apple-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10'></i>
-              <i className='ri-twitter-x-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10'></i>
+              <Link to="/auth-with-google" className="w-full cursor-pointer hover:bg-slate-200  p-1 rounded-md"><i className='ri-google-fill'></i></Link>
+              {/*<i className='ri-apple-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10'></i>*/}
+              {/*<i className='ri-twitter-x-fill cursor-pointer hover:bg-slate-200 p-1 rounded-md w-10'></i>*/}
             </div>
           </div>
           <div className='hidden'>
