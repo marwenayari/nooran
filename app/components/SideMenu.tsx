@@ -38,8 +38,8 @@ export default function SideMenu() {
         >
           {/* <i className='text-xl ri-hand-heart-line'></i> */}
           {/* <i className='text-xl ri-drinks-line'></i> */}
-          <i className='text-xl ri-patreon-fill'></i>
-          {/* <i className='text-xl ri-hand-heart-fill'></i> */}
+          {/* <i className='text-xl ri-patreon-fill'></i> */}
+          <i className='text-xl ri-hand-heart-fill'></i>
         </Link>
       </section>
     </section>

@@ -19,7 +19,21 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ currentUrl, nextUrl
 
 export const action: ActionFunction = async ({ request }) => {
   // const words = ["عمل", "اتقان", "تحدي", "فرح", "تعلم", "سعادة", "تعاون"];
-  const words = ['حب', 'سلام', 'حرية', 'عدالة', 'تسامح', 'احترام']
+  // const words = ['حب', 'سلام', 'حرية', 'عدالة', 'تسامح', 'احترام']
+  const words = [
+    'طمئنينة',
+    'هدوء',
+    'سلام',
+    'سكينة',
+    'راحة',
+    'اطمئنان',
+    'أهل',
+    'أحباب',
+    'أصدقاء',
+    'أحفاد',
+    'أولاد',
+    'أبناء'
+  ]
   const age = 12
 
   const session = await getSession(request.headers.get('Cookie'))
@@ -50,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
       throw new Error(error.message)
     }
 
-    return redirect('/stories')
+    return redirect('/stories?type=0&selected=0')
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 })
   }
