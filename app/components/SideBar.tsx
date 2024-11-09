@@ -29,11 +29,20 @@ export default function SideBar() {
     pro: 'border-amber-300',
     basic: 'border-slate-200'
   }
+
+  const backgroundColors: any = {
+    patron: 'bg-sky-100',
+    enterprise: 'bg-zinc-300',
+    pro: 'bg-orange-200/30',
+    basic: 'bg-dark-beige'
+  }
   let borderColor = borderColors.basic
+  let backgroundColor = backgroundColors.basic
 
   if (profile) {
     avatar = profile.avatarUrl
     borderColor = borderColors[profile.plan] || borderColors.basic
+    backgroundColor = backgroundColors[profile.plan] || backgroundColors.basic
   }
   // const isGuest = !profile?.userId
 
@@ -43,9 +52,9 @@ export default function SideBar() {
     <div></div>
   ) : (
     <section
-      className='user-card
+      className={`user-card
       hidden md:flex lg:flex 
-      flex-col items-center rounded-2xl p-8 bg-dark-beige w-full md:w-1/3 lg:w-1/2 h-full'
+      flex-col items-center rounded-2xl p-8 ${backgroundColor} w-full md:w-1/3 lg:w-1/2 h-full`}
     >
       <div className='flex justify-between w-full h-10'>
         <span className='cursor-pointer'>
@@ -61,7 +70,7 @@ export default function SideBar() {
         </span>
       </div>
       <img
-        className={`rounded-full w-20 h-20 border-solid border-8 mb-2 ${borderColor}`}
+        className={`rounded-full w-20 h-20 border-solid border-8 mb-2 ${borderColor} `}
         src={avatar}
         alt='user avatar'
       />
