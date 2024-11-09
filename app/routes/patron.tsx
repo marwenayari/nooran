@@ -7,7 +7,7 @@ const PatronPage = () => {
 
   return (
     <div className='patron-page'>
-      <h1 className='text-3xl'>{t('title')}</h1>
+      <h1 className='text-3xl mb-4'>{t('title')}</h1>
       <p>{t('description')}</p>
     </div>
   )

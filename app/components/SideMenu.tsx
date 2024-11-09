@@ -4,7 +4,8 @@ export default function SideMenu() {
   const menu = [
     { label: 'Home', icon: 'ri-home-2-line', href: '/' },
     { label: 'Stories', icon: 'ri-book-open-line', href: '/stories' },
-    { label: 'About', icon: 'ri-team-line', href: '/about' }
+    // { label: 'About', icon: 'ri-team-line', href: '/about' },
+    { label: 'Donor', icon: 'ri-hand-heart-fill', href: '/patron' }
   ]
   return (
     <section
@@ -31,16 +32,13 @@ export default function SideMenu() {
         ))}
       </section>
       <section>
-        <Link
+        {/* <Link
           to='/patron'
           prefetch='viewport'
           className='flex bg-white dark:bg-gray-500 rounded-full items-center justify-center w-10 h-10 my-2'
         >
-          {/* <i className='text-xl ri-hand-heart-line'></i> */}
-          {/* <i className='text-xl ri-drinks-line'></i> */}
-          {/* <i className='text-xl ri-patreon-fill'></i> */}
           <i className='text-xl ri-hand-heart-fill'></i>
-        </Link>
+        </Link> */}
       </section>
     </section>
   )
