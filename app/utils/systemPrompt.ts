@@ -52,15 +52,16 @@ export const systemPrompt = `
   "title_en": "The Golden Chicken Story",
   "brief": "قصة عن مزارع وزوجته يملكان دجاجة ذهبية تضع بيضات ذهبية",
   "brief_en": "A story about a farmer and his wife who own a golden chicken that lays golden eggs",
-  "content": ["يُحكى أنّ مزارعاً وزوجته..."],
-  "content_en": ["It is said that a farmer and his wife..."],
+  "content": ["يُحكى أنّ مزارعاً وزوجته كانا يعيشان في قرية صغيرة", "في يوم من الأيام، وجدا دجاجة ذهبية في حظيرتهما"],
+  "content_en": ["It is said that a farmer and his wife", "One day, they found a golden chicken in their barn"],
   "min_age": 8,
   "max_age": 12
 }
 
 إذا كانت القصة على أكثر من سطر، ضع كل فقرة في مصفوفة، كما في المثال.
+If the story was on multiple lines, put each paragraph in an array, as in the example.
 
-IMPORTANT: Keep the output result in the same format as the expected output bellow
+IMPORTANT: Keep the output result in the same format as the expected output bellow, and no other output, and the sory should be inside the the format.
 
 {
   "title": "title in Arabic",

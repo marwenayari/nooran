@@ -61,7 +61,7 @@ export default function SideBar() {
         </span>
       </div>
       <img
-        className={`rounded-full w-20 h-20 border-solid border-4 mb-2 ${borderColor}`}
+        className={`rounded-full w-20 h-20 border-solid border-8 mb-2 ${borderColor}`}
         src={avatar}
         alt='user avatar'
       />
@@ -132,14 +132,14 @@ export default function SideBar() {
               <Link
                 key={course.id}
                 to={`/courses/${course.id}`}
-                className='course-card w-full py-5 relative rounded-xl p-4'
+                className='course-card w-full py-5 relative rounded-xl p-4 h-20 flex items-center'
                 style={{ backgroundColor: course.color }}
               >
                 <div
                   className='absolute w-full h-full rounded-xl z-0 top-0 left-0 '
                   style={{ backgroundColor: course.progressColor, width: `${course.progress}%` }}
                 ></div>
-                <span className='relative z-10'>{course.title}</span>
+                <span className='relative z-10 text-lg'>{course.title}</span>
               </Link>
             ))}
           </section>
